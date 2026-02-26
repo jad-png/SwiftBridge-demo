@@ -1,0 +1,184 @@
+# ============================================================================
+# SwiftBridge SOA Environment - Docker Compose Configuration
+# ============================================================================
+# This file orchestrates three microservices on a shared Docker network:
+# 1. PostgreSQL Database (swiftbridge_db) - Port 5432
+# 2. Orchestrator-Service (orchestrator) - Port 8080
+# 3. Core-Converter-Service (converter) - Port 8081
+#
+# Network: swiftbridge_network (bridge network for internal communication)
+# 
+# Usage:
+#   docker-compose up -d          # Start all services
+#   docker-compose down           # Stop all services
+#   docker-compose logs -f        # Stream logs
+#   docker-compose ps            # Check status
+# ============================================================================
+
+services:
+
+  # ========================================================================
+  # PostgreSQL Database
+  # ========================================================================
+  postgres-db:
+    image: postgres:16-alpine
+    container_name: swiftbridge_postgres
+    
+    environment:
+      # Database credentials - CHANGE IN PRODUCTION
+      POSTGRES_DB: swiftbridge
+      POSTGRES_USER: swiftbridge_user
+      POSTGRES_PASSWORD: SwiftBridge@123!Secure
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
+    
+    ports:
+      # Maps container port 5432 to host port 5432
+      # Internal services use: postgres-db:5432
+      - "5432:5432"
+    
+    volumes:
+      # Named volume for persistent data across container restarts
+      - postgres_data:/var/lib/postgresql/data
+      # Optional: Mount SQL initialization scripts
+      # - ./init-db:/docker-entrypoint-initdb.d
+    
+    networks:
+      - swiftbridge_network
+    
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U swiftbridge_user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    
+    restart: unless-stopped
+    
+    # Security settings
+    security_opt:
+      - no-new-privileges:true
+
+  # ========================================================================
+  # Orchestrator Service
+  # ========================================================================
+  # REST API Gateway + Transaction Metadata Manager
+  # Communicates with: PostgreSQL, Core-Converter-Service
+  # ========================================================================
+  orchestrator-service:
+    build:
+      context: ./Orchestrator-Service
+      dockerfile: Dockerfile
+    container_name: swiftbridge_orchestrator
+    
+    environment:
+      # Spring profiles and JVM settings
+      SPRING_PROFILES_ACTIVE: docker
+      JAVA_OPTS: "-Xmx512m -Xms256m"
+      
+      # Database connection (uses service name from Docker network)
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/swiftbridge
+      SPRING_DATASOURCE_USERNAME: swiftbridge_user
+      SPRING_DATASOURCE_PASSWORD: SwiftBridge@123!Secure
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      
+      # Core Converter Service URL (internal communication)
+      APP_CORE_CONVERTER_URL: http://core-converter-service:8081
+    
+    ports:
+      # Maps container port 8080 to host port 8080
+      - "8080:8080"
+    
+    networks:
+      - swiftbridge_network
+    
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+    
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/actuator/health"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    
+    restart: unless-stopped
+    
+    security_opt:
+      - no-new-privileges:true
+    
+    # Resource limits for production deployments
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+  # ========================================================================
+  # Core Converter Service
+  # ========================================================================
+  # Lightweight ISO 20022<->MT103 Conversion Engine
+  # Communicates with: Orchestrator-Service (incoming requests only)
+  # No database dependency (stateless)
+  # ========================================================================
+  core-converter-service:
+    build:
+      context: ./Core-Converter-Service
+      dockerfile: Dockerfile
+    container_name: swiftbridge_converter
+    
+    environment:
+      # Spring profiles and JVM settings
+      SPRING_PROFILES_ACTIVE: docker
+      JAVA_OPTS: "-Xmx256m -Xms128m"
+    
+    ports:
+      # Maps container port 8081 to host port 8081
+      - "8081:8081"
+    
+    networks:
+      - swiftbridge_network
+    
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/api/v1/actuator/health"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+    
+    restart: unless-stopped
+    
+    security_opt:
+      - no-new-privileges:true
+    
+    # Resource limits for production deployments
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 512M
+        reservations:
+          cpus: '1.0'
+          memory: 256M
+
+# ============================================================================
+# DOCKER NETWORKS
+# ============================================================================
+# All services communicate via this isolated bridge network
+networks:
+  swiftbridge_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+# ============================================================================
+# DOCKER VOLUMES
+# ============================================================================
+# Persistent storage for PostgreSQL data
+volumes:
+  postgres_data:
+    driver: local

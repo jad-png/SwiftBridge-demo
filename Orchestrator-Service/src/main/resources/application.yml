@@ -1,0 +1,124 @@
+spring:
+  application:
+    name: orchestrator-service
+    description: SwiftBridge Orchestrator Service
+
+  # ========================================================================
+  # SERVER CONFIGURATION
+  # ========================================================================
+  servlet:
+    context-path: /api
+
+  # ========================================================================
+  # DATABASE CONFIGURATION (PostgreSQL)
+  # Note: Only Orchestrator connects to the database.
+  # The database is shared via Docker network and persists transaction history.
+  # ========================================================================
+  datasource:
+    url: jdbc:postgresql://swiftbridge_postgres:5432/swiftbridge
+    username: swiftbridge_user
+    password: SwiftBridge@123!Secure
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      # Connection pool configuration for optimal performance
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+  jpa:
+    hibernate:
+      # Create tables automatically (use 'validate' in production)
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        use_sql_comments: true
+        jdbc:
+          batch_size: 20
+          fetch_size: 50
+
+  # ========================================================================
+  # JACKSON CONFIGURATION (JSON Processing)
+  # ========================================================================
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+      indent-output: true
+    deserialization:
+      fail-on-unknown-properties: false
+
+# ============================================================================
+# SERVER PORT CONFIGURATION
+# ============================================================================
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+  tomcat:
+    threads:
+      max: 200
+      min-spare: 10
+    connection-timeout: 20000
+
+# ============================================================================
+# LOGGING CONFIGURATION
+# ============================================================================
+logging:
+  level:
+    root: INFO
+    com.swiftbridge.orchestrator: DEBUG
+    org.springframework.web: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql: TRACE
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+# ============================================================================
+# ACTUATOR & MONITORING (Health checks for orchestration)
+# ============================================================================
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when-authorized
+
+# ============================================================================
+# APPLICATION-SPECIFIC CONFIGURATION
+# ============================================================================
+app:
+  # Core Converter Service endpoint (internal communication)
+  core-converter:
+    url: http://core-converter-service:8081
+    connect-timeout: 5000
+    read-timeout: 10000
+  
+  # JWT Configuration (stubbed for PoC)
+  security:
+    jwt:
+      enabled: false
+      secret: 
+      expiration: 86400000
+  
+  # Transaction Management
+  transaction:
+    max-retry-attempts: 3
+    retry-delay-ms: 1000
+
+# ============================================================================
+# CONVERTER SERVICE CONFIGURATION (for ConversionService)
+# Note: Use localhost:8081 for local development, core-converter-service:8081 for Docker
+# ============================================================================
+converter:
+  service:
+    # URL of the Core Converter Service (use http://core-converter-service:8081 in Docker)
+    url: http://localhost:8081
+    # Internal endpoint for XML to MT103 conversion
+    endpoint: /api/v1/internal/convert

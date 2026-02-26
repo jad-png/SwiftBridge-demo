@@ -1,0 +1,86 @@
+# SwiftBridge Project Root - .gitignore
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.iml
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+
+# Build and Compilation
+target/
+build/
+out/
+*.class
+*.jar
+*.war
+*.nar
+
+# Maven
+.m2/
+mvnw.cmd
+.mvn/
+
+# Gradle
+.gradle/
+gradlew
+gradlew.bat
+
+# Node.js (if frontend modules exist)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Environment and Configuration
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+
+# Logs
+*.log
+logs/
+
+# Test Coverage
+.coverage
+coverage/
+jacoco/
+
+# Temporary files
+*.tmp
+*.temp
+*.backup
+*~
+
+# OS-specific
+.DS_Store
+Thumbs.db
+.Spotlight-V100
+.Trashes
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+
+# Git
+.git/
+.gitattributes
+
+# CI/CD
+.github/workflows/local.yml
+
+# IDE Generated
+.classpath
+.project
+.settings/
+.vscode/settings.json
+
+# Security
+*.pem
+*.pfx
+*.key
+secrets.env

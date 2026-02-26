@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Sample pacs.008-001.02 XML Document for Testing
+Minimal valid structure for MVP demonstration
+This document represents a Customer Credit Transfer Initiation message (pacs.008)
+-->
+<Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.02" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <CstmrCdtTrfInitn>
+        <!-- Group Header -->
+        <GrpHdr>
+            <!-- Message Identification -->
+            <MsgId>MSG202602261001</MsgId>
+            
+            <!-- Creation Date and Time -->
+            <CreDtTm>2026-02-26T10:15:30</CreDtTm>
+            
+            <!-- Number of Transactions -->
+            <NbOfTxs>1</NbOfTxs>
+            
+            <!-- Control Sum -->
+            <CtrlSum>25000.00</CtrlSum>
+            
+            <!-- Initiating Party -->
+            <InitgPty>
+                <Nm>SWIFT TECH CORPORATION</Nm>
+                <Id>
+                    <OrgId>
+                        <BICOrBEI>SWFTUS3N</BICOrBEI>
+                    </OrgId>
+                </Id>
+            </InitgPty>
+        </GrpHdr>
+
+        <!-- Payment Information -->
+        <PmtInf>
+            <!-- Payment Information Identification -->
+            <PmtInfId>PAYINFO001</PmtInfId>
+            
+            <!-- Payment Method -->
+            <PmtMtd>TRF</PmtMtd>
+            
+            <!-- Batch Booking -->
+            <BtchBookg>false</BtchBookg>
+            
+            <!-- Number of Transactions -->
+            <NbOfTxs>1</NbOfTxs>
+            
+            <!-- Control Sum -->
+            <CtrlSum>25000.00</CtrlSum>
+            
+            <!-- Payment Type Information -->
+            <PmtTpInf>
+                <InstrPriority>NORM</InstrPriority>
+                <ClrChanl>CRDT</ClrChanl>
+                <SvcLvl>
+                    <Cd>SEPA</Cd>
+                </SvcLvl>
+            </PmtTpInf>
+            
+            <!-- Requested Execution Date -->
+            <ReqdExctnDt>
+                <Dt>2026-02-26</Dt>
+            </ReqdExctnDt>
+            
+            <!-- Debtor Account -->
+            <DbtrAcct>
+                <Id>
+                    <IBAN>DE89370400440532013000</IBAN>
+                </Id>
+                <Ccy>EUR</Ccy>
+            </DbtrAcct>
+            
+            <!-- Debtor Agent -->
+            <DbtrAgt>
+                <FinInstnId>
+                    <BIC>DEUTDEFF</BIC>
+                </FinInstnId>
+            </DbtrAgt>
+            
+            <!-- Charge Bearer -->
+            <ChrgBr>SLEV</ChrgBr>
+            
+            <!-- Credit Transfer Transaction Information -->
+            <CdtTrfTxInf>
+                <!-- Payment Identification -->
+                <PmtId>
+                    <InstrId>INSTR001</InstrId>
+                    <EndToEndId>E2E20260226001</EndToEndId>
+                </PmtId>
+                
+                <!-- Amount -->
+                <Amt>
+                    <InstdAmt Ccy="USD">25000.00</InstdAmt>
+                </Amt>
+                
+                <!-- Exchange Rate Details -->
+                <XchgRateInf>
+                    <UnitCcy>USD</UnitCcy>
+                    <ExchRate>1.0800</ExchRate>
+                </XchgRateInf>
+                
+                <!-- Creditor Agent -->
+                <CdtrAgt>
+                    <FinInstnId>
+                        <BIC>CITIUS33</BIC>
+                    </FinInstnId>
+                </CdtrAgt>
+                
+                <!-- Creditor Account -->
+                <CdtrAcct>
+                    <Id>
+                        <IBAN>US64GDOT000000000000000</IBAN>
+                    </Id>
+                </CdtrAcct>
+                
+                <!-- Creditor Information -->
+                <Cdtr>
+                    <Nm>RECIPIENT CORPORATION INC</Nm>
+                    <PstlAdr>
+                        <Ctry>US</Ctry>
+                        <AdrLine>123 Main Street, Suite 100</AdrLine>
+                        <AdrLine>New York, NY 10001</AdrLine>
+                    </PstlAdr>
+                </Cdtr>
+                
+                <!-- Ultimate Debtor -->
+                <UltmtDbtr>
+                    <Nm>SWIFT TECH CORPORATION</Nm>
+                    <PstlAdr>
+                        <Ctry>DE</Ctry>
+                        <AdrLine>Reuterweg 123</AdrLine>
+                        <AdrLine>60261 Frankfurt am Main</AdrLine>
+                    </PstlAdr>
+                </UltmtDbtr>
+                
+                <!-- Purpose Code -->
+                <Purp>
+                    <Cd>SUPP</Cd>
+                </Purp>
+                
+                <!-- Remittance Information -->
+                <RmtInf>
+                    <Ustrd>Invoice payment for goods delivered in February 2026</Ustrd>
+                </RmtInf>
+            </CdtTrfTxInf>
+        </PmtInf>
+    </CstmrCdtTrfInitn>
+</Document>

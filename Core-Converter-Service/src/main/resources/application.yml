@@ -1,0 +1,91 @@
+# ============================================================================
+# CORE CONVERTER SERVICE - application.yml
+# ============================================================================
+# This configuration file manages the lightweight conversion engine that:
+# - Processes ISO 20022 (pacs.008 XML) to Legacy MT103 (TXT) conversion
+# - Operates as a stateless microservice
+# - Communicates ONLY with Orchestrator-Service (internal)
+# - Handles high-volume conversion requests
+# ============================================================================
+
+spring:
+  application:
+    name: core-converter-service
+    description: SwiftBridge Core Converter Service
+
+  # ========================================================================
+  # SERVER CONFIGURATION
+  # ========================================================================
+  servlet:
+    context-path: /api/v1
+
+  # ========================================================================
+  # JACKSON CONFIGURATION (JSON Processing)
+  # ========================================================================
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+      indent-output: true
+    default-property-inclusion: non_null
+    deserialization:
+      fail-on-unknown-properties: false
+
+# ============================================================================
+# SERVER PORT CONFIGURATION
+# ============================================================================
+server:
+  port: 8081
+  servlet:
+    context-path: /api/v1
+  tomcat:
+    threads:
+      max: 250
+      min-spare: 20
+    connection-timeout: 20000
+    # Optimize for high-throughput conversion workloads
+    accept-count: 100
+
+# ============================================================================
+# LOGGING CONFIGURATION
+# ============================================================================
+logging:
+  level:
+    root: INFO
+    com.swiftbridge.converter: DEBUG
+    org.springframework.web: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+# ============================================================================
+# ACTUATOR & MONITORING (Health checks for internal use only)
+# ============================================================================
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+# ============================================================================
+# APPLICATION-SPECIFIC CONFIGURATION
+# ============================================================================
+app:
+  # Converter-specific settings
+  converter:
+    # Matrix of SWIFT to MT103 field mappings
+    field-mapping:
+      enabled: true
+    # Validation strictness level (strict|lenient|warning)
+    validation-mode: strict
+    # Performance optimization for batch processing
+    batch:
+      enabled: true
+      size: 50
+  
+  # Internal security (for service-to-service communication)
+  # Note: If added later, API keys or mTLS can be configured here
+  security:
+    internal-api-key: CHANGE_ME_IN_PRODUCTION
