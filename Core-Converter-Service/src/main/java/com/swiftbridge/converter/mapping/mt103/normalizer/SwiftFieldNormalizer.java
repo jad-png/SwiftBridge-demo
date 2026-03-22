@@ -24,10 +24,14 @@ public class SwiftFieldNormalizer {
     }
 
     public String normalize32A(String dateIso, String currency, String amountRaw) {
-        LocalDate date = parseDateOrToday(dateIso);
+        LocalDate date = normalizeSettlementDate(dateIso);
         String ccy = normalizeCurrency(currency);
         String amount = normalizeAmountForMt(amountRaw);
         return date.format(MT_32A_DATE) + ccy + amount;
+    }
+
+    private LocalDate normalizeSettlementDate(String dateIso) {
+        return parseDateOrToday(dateIso);
     }
 
     public String normalizeAmountForMt(String amountRaw) {
