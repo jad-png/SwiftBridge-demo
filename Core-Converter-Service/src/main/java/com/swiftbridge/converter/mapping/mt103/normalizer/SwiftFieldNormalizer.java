@@ -12,10 +12,15 @@ public class SwiftFieldNormalizer {
 
     private static final DateTimeFormatter ISO_DATE = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final DateTimeFormatter MT_32A_DATE = DateTimeFormatter.ofPattern("yyMMdd");
+    private static final String DEFAULT_REFERENCE = "UNKNOWNREF";
 
     public String normalizeReference(String reference) {
         String normalized = normalizeText(reference);
-        return normalized.isEmpty() ? "UNKNOWNREF" : normalized;
+        return normalized.isEmpty() ? defaultReference() : normalized;
+    }
+
+    private String defaultReference() {
+        return DEFAULT_REFERENCE;
     }
 
     public String normalize32A(String dateIso, String currency, String amountRaw) {
