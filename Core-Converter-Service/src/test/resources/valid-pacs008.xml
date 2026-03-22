@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.02">
+    <CstmrCdtTrfInitn>
+        <GrpHdr>
+            <MsgId>ABCD20260320001234</MsgId>
+            <CreDtTm>2026-03-20T10:15:30</CreDtTm>
+            <NbOfTxns>1</NbOfTxns>
+            <CtrlSum>500000.00</CtrlSum>
+            <InitgPty>
+                <Nm>SENDER BANK CORP</Nm>
+            </InitgPty>
+        </GrpHdr>
+        <PmtInfo>
+            <PmtInfId>ABCD20260320001234</PmtInfId>
+            <PmtMtd>TRF</PmtMtd>
+            <ChrgBr>SLEV</ChrgBr>
+            <ReqdExctnDt>2026-03-20</ReqdExctnDt>
+            <Dbtr>
+                <Nm>JOHN SMITH INTERNATIONAL TRADING COMPANY LIMITED</Nm>
+                <PstlAdr>
+                    <Ctry>GB</Ctry>
+                    <AdrLine>123 Business Street London</AdrLine>
+                </PstlAdr>
+            </Dbtr>
+            <DbtrAcct>
+                <Id>
+                    <IBAN>GB82WEST12345698765432</IBAN>
+                </Id>
+            </DbtrAcct>
+            <DbtrAgt>
+                <FinInstnId>
+                    <BICFI>WESTGB2L</BICFI>
+                </FinInstnId>
+            </DbtrAgt>
+            <CdtTrfTxInf>
+                <PmtId>
+                    <InstrId>12345ABCDE</InstrId>
+                    <EndToEndId>UETR123456789ABCDEF123456789ABC</EndToEndId>
+                </PmtId>
+                <Amt>
+                    <InstdAmt Ccy="USD">500000.00</InstdAmt>
+                </Amt>
+                <IntrBkSttlmAmt Ccy="USD">500000.00</IntrBkSttlmAmt>
+                <IntrBkSttlmDt>2026-03-20</IntrBkSttlmDt>
+                <Cdtr>
+                    <Nm>JANE DOE INTERNATIONAL FINANCE</Nm>
+                    <PstlAdr>
+                        <Ctry>US</Ctry>
+                        <AdrLine>456 Financial Avenue New York</AdrLine>
+                    </PstlAdr>
+                </Cdtr>
+                <CdtrAcct>
+                    <Id>
+                        <Othr>
+                            <Id>9876543210</Id>
+                        </Othr>
+                    </Id>
+                </CdtrAcct>
+                <CdtrAgt>
+                    <FinInstnId>
+                        <BICFI>CHUSUSNYC</BICFI>
+                    </FinInstnId>
+                </CdtrAgt>
+                <RmtInf>
+                    <Ustrd>Test payment for invoice ABC123</Ustrd>
+                </RmtInf>
+            </CdtTrfTxInf>
+        </PmtInfo>
+    </CstmrCdtTrfInitn>
+</Document>
