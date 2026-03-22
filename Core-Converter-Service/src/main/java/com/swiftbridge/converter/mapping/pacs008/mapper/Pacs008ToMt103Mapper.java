@@ -47,12 +47,8 @@ public class Pacs008ToMt103Mapper {
 
             Pacs008Fields fields = parseAndExtract(xmlContent);
 
-            String mt20 = normalizer.normalizeReference(fields.reference());
-            String mt32A = normalizer.normalize32A(
-                fields.settlementDate(),
-                fields.amountCurrency(),
-                fields.amountValue()
-            );
+            String mt20 = mapReference(fields);
+            String mt32A = map32A(fields);
 
             TruncationResult mt50kResult = formatter.buildPartyLinesWithWarning(":50K:", fields.debtorName(), fields.debtorAddress());
             TruncationResult mt59Result = formatter.buildPartyLinesWithWarning(":59:", fields.creditorName(), fields.creditorAddress());
@@ -141,6 +137,18 @@ public class Pacs008ToMt103Mapper {
 
     private String buildSequenceNumber() {
         return LocalDateTime.now().format(SEQUENCE_FORMATTER);
+    }
+
+    private String mapReference(Pacs008Fields fields) {
+        return normalizer.normalizeReference(fields.reference());
+    }
+
+    private String map32A(Pacs008Fields fields) {
+        return normalizer.normalize32A(
+            fields.settlementDate(),
+            fields.amountCurrency(),
+            fields.amountValue()
+        );
     }
 
     private String resolveUetr(String uetr, String fallbackReference) {
