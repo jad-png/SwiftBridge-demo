@@ -46,11 +46,7 @@ class SwiftMappingTest {
         Pacs008Fields fields = fieldExtractor.extract(document);
 
         assertNotNull(fields, "Fields object should not be null");
-        assertNotNull(fields.amountValue(), "Amount value should be extracted");
-        assertNotNull(fields.amountCurrency(), "Currency should be extracted");
-        assertNotNull(fields.debtorName(), "Debtor name should be extracted");
-        assertNotNull(fields.creditorName(), "Creditor name should be extracted");
-        assertNotNull(fields.settlementDate(), "Settlement date should be extracted");
+        assertMandatoryFieldsPresent(fields);
 
         assertEquals("500000.00", fields.amountValue(), "Amount should be 500000.00");
         assertEquals("USD", fields.amountCurrency(), "Currency should be USD");
@@ -108,11 +104,7 @@ class SwiftMappingTest {
 
         Pacs008Fields fields = extractFieldsFromFixture("valid-pacs008.xml");
 
-        assertFalse(fields.amountValue().isEmpty(), "Amount value should not be empty");
-        assertFalse(fields.amountCurrency().isEmpty(), "Amount currency should not be empty");
-        assertFalse(fields.debtorName().isEmpty(), "Debtor name should not be empty");
-        assertFalse(fields.creditorName().isEmpty(), "Creditor name should not be empty");
-        assertFalse(fields.settlementDate().isEmpty(), "Settlement date should not be empty");
+        assertMandatoryFieldsNotEmpty(fields);
     }
 
     private String readTestResource(String filename) throws Exception {
@@ -126,5 +118,21 @@ class SwiftMappingTest {
 
     private Pacs008Fields extractFieldsFromFixture(String filename) throws Exception {
         return fieldExtractor.extract(parseFixture(filename));
+    }
+
+    private void assertMandatoryFieldsPresent(Pacs008Fields fields) {
+        assertNotNull(fields.amountValue(), "Amount value should be extracted");
+        assertNotNull(fields.amountCurrency(), "Currency should be extracted");
+        assertNotNull(fields.debtorName(), "Debtor name should be extracted");
+        assertNotNull(fields.creditorName(), "Creditor name should be extracted");
+        assertNotNull(fields.settlementDate(), "Settlement date should be extracted");
+    }
+
+    private void assertMandatoryFieldsNotEmpty(Pacs008Fields fields) {
+        assertFalse(fields.amountValue().isEmpty(), "Amount value should not be empty");
+        assertFalse(fields.amountCurrency().isEmpty(), "Amount currency should not be empty");
+        assertFalse(fields.debtorName().isEmpty(), "Debtor name should not be empty");
+        assertFalse(fields.creditorName().isEmpty(), "Creditor name should not be empty");
+        assertFalse(fields.settlementDate().isEmpty(), "Settlement date should not be empty");
     }
 }
