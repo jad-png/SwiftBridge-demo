@@ -242,11 +242,15 @@ public class Pacs008FieldExtractor {
 
     private String firstNonBlank(String... values) {
         for (String value : values) {
-            if (value != null && !normalizer.normalizeText(value).isEmpty()) {
+            if (hasNormalizedValue(value)) {
                 return normalizer.normalizeText(value);
             }
         }
         return "";
+    }
+
+    private boolean hasNormalizedValue(String value) {
+        return value != null && !normalizer.normalizeText(value).isEmpty();
     }
 
     private static final class Pacs008NamespaceContext implements NamespaceContext {
