@@ -24,7 +24,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class Pacs008XPathParserService {
 
+    private static final String DOC_PREFIX = "doc";
     private static final String PACS_008_NS = "urn:iso:std:iso:20022:tech:xsd:pacs.008.001.02";
+    private static final String PARSE_FAILURE_MESSAGE = "Failed to parse pacs.008 fields via XPath";
 
     private final XmlParsingService xmlParsingService;
     private final SwiftTruncationUtil swiftTruncationUtil;
@@ -63,7 +65,7 @@ public class Pacs008XPathParserService {
                 warnings
             );
         } catch (Exception ex) {
-            throw new RuntimeException("Failed to parse pacs.008 fields via XPath", ex);
+            throw new RuntimeException(PARSE_FAILURE_MESSAGE, ex);
         }
     }
 
@@ -122,7 +124,7 @@ public class Pacs008XPathParserService {
             if (prefix == null) {
                 throw new IllegalArgumentException("Prefix cannot be null");
             }
-            if ("doc".equals(prefix)) {
+            if (DOC_PREFIX.equals(prefix)) {
                 return PACS_008_NS;
             }
             if ("xml".equals(prefix)) {
@@ -134,7 +136,7 @@ public class Pacs008XPathParserService {
         @Override
         public String getPrefix(String namespaceURI) {
             if (PACS_008_NS.equals(namespaceURI)) {
-                return "doc";
+                return DOC_PREFIX;
             }
             return null;
         }
