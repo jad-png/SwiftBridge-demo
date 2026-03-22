@@ -32,6 +32,8 @@ import com.swiftbridge.converter.utils.TruncationResult;
 @Slf4j
 public class Pacs008ToMt103Mapper {
 
+    private static final String MAPPING_FAILURE_PREFIX = "Failed to convert pacs.008 to MT103: ";
+
     private final XmlParsingService xmlParsingService;
     private final Pacs008FieldExtractor fieldExtractor;
     private final SwiftFieldNormalizer normalizer;
@@ -77,8 +79,7 @@ public class Pacs008ToMt103Mapper {
             return new ConversionResult(mt103, warnings);
 
         } catch (Exception ex) {
-            log.error("CBPR+ to MT103 mapping failed", ex);
-            throw new RuntimeException("Failed to convert pacs.008 to MT103: " + ex.getMessage(), ex);
+            throw handleMappingFailure(ex);
         }
     }
 
@@ -208,6 +209,11 @@ public class Pacs008ToMt103Mapper {
         if (truncationResult.truncated() && !truncationResult.warning().isBlank()) {
             warnings.add(truncationResult.warning());
         }
+    }
+
+    private RuntimeException handleMappingFailure(Exception ex) {
+        log.error("CBPR+ to MT103 mapping failed", ex);
+        return new RuntimeException(MAPPING_FAILURE_PREFIX + ex.getMessage(), ex);
     }
 
     private String resolveUetr(String uetr, String fallbackReference) {
