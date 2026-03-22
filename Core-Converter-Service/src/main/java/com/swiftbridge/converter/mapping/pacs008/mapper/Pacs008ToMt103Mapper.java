@@ -50,8 +50,8 @@ public class Pacs008ToMt103Mapper {
             String mt20 = mapReference(fields);
             String mt32A = map32A(fields);
 
-            TruncationResult mt50kResult = formatter.buildPartyLinesWithWarning(":50K:", fields.debtorName(), fields.debtorAddress());
-            TruncationResult mt59Result = formatter.buildPartyLinesWithWarning(":59:", fields.creditorName(), fields.creditorAddress());
+            TruncationResult mt50kResult = mapDebtorPartyLines(fields);
+            TruncationResult mt59Result = mapCreditorPartyLines(fields);
             List<String> mt50k = mt50kResult.lines();
             List<String> mt59 = mt59Result.lines();
 
@@ -149,6 +149,14 @@ public class Pacs008ToMt103Mapper {
             fields.amountCurrency(),
             fields.amountValue()
         );
+    }
+
+    private TruncationResult mapDebtorPartyLines(Pacs008Fields fields) {
+        return formatter.buildPartyLinesWithWarning(":50K:", fields.debtorName(), fields.debtorAddress());
+    }
+
+    private TruncationResult mapCreditorPartyLines(Pacs008Fields fields) {
+        return formatter.buildPartyLinesWithWarning(":59:", fields.creditorName(), fields.creditorAddress());
     }
 
     private String resolveUetr(String uetr, String fallbackReference) {
