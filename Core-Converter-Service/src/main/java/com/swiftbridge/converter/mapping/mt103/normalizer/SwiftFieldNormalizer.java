@@ -76,13 +76,17 @@ public class SwiftFieldNormalizer {
     }
 
     public String mapChargeBearer(String isoChargeBearer) {
-        String value = normalizeText(isoChargeBearer).toUpperCase(Locale.ROOT);
+        String value = normalizeChargeBearerKey(isoChargeBearer);
         return switch (value) {
             case "SHAR", "SHA" -> "SHA";
             case "DEBT", "OUR" -> "OUR";
             case "CRED", "BEN" -> "BEN";
             default -> "SHA";
         };
+    }
+
+    private String normalizeChargeBearerKey(String isoChargeBearer) {
+        return normalizeText(isoChargeBearer).toUpperCase(Locale.ROOT);
     }
 
     public String normalizeText(String value) {
