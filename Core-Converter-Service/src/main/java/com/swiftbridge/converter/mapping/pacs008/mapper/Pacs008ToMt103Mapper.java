@@ -100,11 +100,15 @@ public class Pacs008ToMt103Mapper {
     }
 
     private String buildSessionNumber() {
-        return LocalDateTime.now().format(SESSION_FORMATTER);
+        return currentTimestamp().format(SESSION_FORMATTER);
     }
 
     private String buildSequenceNumber() {
-        return LocalDateTime.now().format(SEQUENCE_FORMATTER);
+        return currentTimestamp().format(SEQUENCE_FORMATTER);
+    }
+
+    private LocalDateTime currentTimestamp() {
+        return LocalDateTime.now();
     }
 
     private String mapReference(Pacs008Fields fields) {
