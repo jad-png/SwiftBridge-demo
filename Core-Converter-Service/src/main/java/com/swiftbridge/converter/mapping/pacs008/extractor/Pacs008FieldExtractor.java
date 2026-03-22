@@ -53,26 +53,9 @@ public class Pacs008FieldExtractor {
         validateAmountPresence(amountValue);
         validateAmountCurrency(amountCurrency);
 
-        if (debtorName.isEmpty()) {
-            throw new SwiftMappingException(
-                SwiftErrorCode.ERR_DEBTOR_NAME_MISSING,
-                "Dbtr/Nm or InitgPty/Nm not found in pacs.008 document"
-            );
-        }
-
-        if (creditorName.isEmpty()) {
-            throw new SwiftMappingException(
-                SwiftErrorCode.ERR_CREDITOR_NAME_MISSING,
-                "Cdtr/Nm or UltmtDbtr/Nm not found in pacs.008 document"
-            );
-        }
-
-        if (settlementDate.isEmpty()) {
-            throw new SwiftMappingException(
-                SwiftErrorCode.ERR_INVALID_SETTLEMENT_DATE,
-                "IntrBkSttlmDt not found in pacs.008 document"
-            );
-        }
+        validateDebtorName(debtorName);
+        validateCreditorName(creditorName);
+        validateSettlementDate(settlementDate);
 
         String debtorBic = firstNonBlank(
             evaluate(xpath, document, Pacs008Xpaths.DBTR_BICFI),
@@ -142,6 +125,36 @@ public class Pacs008FieldExtractor {
         throw new SwiftMappingException(
             SwiftErrorCode.ERR_INVALID_CURRENCY,
             "Currency (@Ccy attribute) not found in amount field"
+        );
+    }
+
+    private void validateDebtorName(String debtorName) {
+        if (!debtorName.isEmpty()) {
+            return;
+        }
+        throw new SwiftMappingException(
+            SwiftErrorCode.ERR_DEBTOR_NAME_MISSING,
+            "Dbtr/Nm or InitgPty/Nm not found in pacs.008 document"
+        );
+    }
+
+    private void validateCreditorName(String creditorName) {
+        if (!creditorName.isEmpty()) {
+            return;
+        }
+        throw new SwiftMappingException(
+            SwiftErrorCode.ERR_CREDITOR_NAME_MISSING,
+            "Cdtr/Nm or UltmtDbtr/Nm not found in pacs.008 document"
+        );
+    }
+
+    private void validateSettlementDate(String settlementDate) {
+        if (!settlementDate.isEmpty()) {
+            return;
+        }
+        throw new SwiftMappingException(
+            SwiftErrorCode.ERR_INVALID_SETTLEMENT_DATE,
+            "IntrBkSttlmDt not found in pacs.008 document"
         );
     }
 
