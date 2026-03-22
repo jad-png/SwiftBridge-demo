@@ -30,7 +30,7 @@ public class ConverterController {
     @ValidXmlFile
     public ResponseEntity<?> convertPacs008ToMt103(@RequestParam("file") MultipartFile file)
         throws IOException, FileValidationException {
-        log.info("Request received for file: {}", file.getOriginalFilename());
+        logConversionRequest(file);
         long startNanos = System.nanoTime();
 
         String xmlContent = readXmlContent(file);
@@ -38,7 +38,7 @@ public class ConverterController {
         ConversionResult conversionResult = xmlToMtMapper.convertPacs008ToMt103(xmlContent);
         long processingTimeMs = computeProcessingTimeMs(startNanos);
 
-        log.info("Successfully generated MT103 for {} in {}ms", file.getOriginalFilename(), processingTimeMs);
+        logConversionCompletion(file, processingTimeMs);
 
         return ResponseEntity.ok(buildConversionResponse(conversionResult, processingTimeMs));
     }
@@ -57,5 +57,13 @@ public class ConverterController {
             .warnings(conversionResult.warnings())
             .processingTimeMs(processingTimeMs)
             .build();
+    }
+
+    private void logConversionRequest(MultipartFile file) {
+        log.info("Request received for file: {}", file.getOriginalFilename());
+    }
+
+    private void logConversionCompletion(MultipartFile file, long processingTimeMs) {
+        log.info("Successfully generated MT103 for {} in {}ms", file.getOriginalFilename(), processingTimeMs);
     }
 }
