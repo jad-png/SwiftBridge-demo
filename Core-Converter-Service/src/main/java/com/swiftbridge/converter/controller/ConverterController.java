@@ -60,10 +60,18 @@ public class ConverterController {
     }
 
     private void logConversionRequest(MultipartFile file) {
-        log.info("Request received for file: {}", file.getOriginalFilename());
+        log.info("Request received for file: {}", safeFilename(file));
     }
 
     private void logConversionCompletion(MultipartFile file, long processingTimeMs) {
-        log.info("Successfully generated MT103 for {} in {}ms", file.getOriginalFilename(), processingTimeMs);
+        log.info("Successfully generated MT103 for {} in {}ms", safeFilename(file), processingTimeMs);
+    }
+
+    private String safeFilename(MultipartFile file) {
+        String originalFilename = file.getOriginalFilename();
+        if (originalFilename == null || originalFilename.isBlank()) {
+            return "unknown.xml";
+        }
+        return originalFilename;
     }
 }
