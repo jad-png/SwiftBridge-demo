@@ -34,13 +34,8 @@ public class Mt103Formatter {
 
         appendTag50K(builder, tag50KLines);
 
-        if (!tag52A.isBlank()) {
-            builder.append(":52A:").append(tag52A).append("\r\n");
-        }
-
-        if (!tag57A.isBlank()) {
-            builder.append(":57A:").append(tag57A).append("\r\n");
-        }
+        appendOptionalTag(builder, "52A", tag52A);
+        appendOptionalTag(builder, "57A", tag57A);
 
         appendTag59(builder, tag59Lines);
 
@@ -61,6 +56,12 @@ public class Mt103Formatter {
         builder.append(":59:").append("\r\n");
         for (String line : tag59Lines) {
             builder.append(trimToLength(line, 35)).append("\r\n");
+        }
+    }
+
+    private void appendOptionalTag(StringBuilder builder, String tagName, String value) {
+        if (!value.isBlank()) {
+            builder.append(':').append(tagName).append(':').append(value).append("\r\n");
         }
     }
 
