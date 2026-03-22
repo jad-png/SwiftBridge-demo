@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponseDTO> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
             HttpServletRequest request) {
-        String correlationId = CorrelationIdUtil.extractOrGenerateCorrelationId(request);
+                String correlationId = extractCorrelationId(request);
         String message = "Validation failed";
         FieldError firstError = ex.getBindingResult().getFieldError();
         if (firstError != null && firstError.getDefaultMessage() != null) {
@@ -34,8 +34,7 @@ public class GlobalExceptionHandler {
 
         log.error("[Correlation-ID: {}] Request validation failed at {} {} | Details: {} | Stack:",
                 correlationId,
-                request.getMethod(),
-                request.getRequestURI(),
+                requestSignature(request),
                 message,
                 ex);
 
@@ -45,12 +44,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(FileValidationException.class)
     public ResponseEntity<ErrorResponseDTO> handleFileValidation(FileValidationException ex,
             HttpServletRequest request) {
-        String correlationId = CorrelationIdUtil.extractOrGenerateCorrelationId(request);
+                String correlationId = extractCorrelationId(request);
 
         log.error("[Correlation-ID: {}] File validation failed at {} {} | Reason: {} | Stack:",
                 correlationId,
-                request.getMethod(),
-                request.getRequestURI(),
+                requestSignature(request),
                 ex.getMessage(),
                 ex);
 
@@ -61,13 +59,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(SwiftMappingException.class)
     public ResponseEntity<ErrorResponseDTO> handleSwiftMapping(SwiftMappingException ex,
             HttpServletRequest request) {
-        String correlationId = CorrelationIdUtil.extractOrGenerateCorrelationId(request);
+                String correlationId = extractCorrelationId(request);
         SwiftErrorCode errorCode = ex.getErrorCode();
 
         log.error("[Correlation-ID: {}] Swift mapping failed at {} {} | Error Code: {} | Error Message: {} | Stack:",
                 correlationId,
-                request.getMethod(),
-                request.getRequestURI(),
+                requestSignature(request),
                 errorCode.getCode(),
                 errorCode.getMessage(),
                 ex);
@@ -81,7 +78,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ConversionFailedException.class)
     public ResponseEntity<ErrorResponseDTO> handleConversionFailed(ConversionFailedException ex,
             HttpServletRequest request) {
-        String correlationId = CorrelationIdUtil.extractOrGenerateCorrelationId(request);
+                String correlationId = extractCorrelationId(request);
         boolean isClientError = isClientErrorCode(ex.getErrorCode());
         HttpStatus status = isClientError ? HttpStatus.BAD_REQUEST : HttpStatus.INTERNAL_SERVER_ERROR;
 
@@ -92,8 +89,7 @@ public class GlobalExceptionHandler {
         log.error(
                 "[Correlation-ID: {}] Conversion failed at {} {} | Error Code: {} | Status: {} | Message: {} | Stack:",
                 correlationId,
-                request.getMethod(),
-                request.getRequestURI(),
+                requestSignature(request),
                 ex.getErrorCode(),
                 status.value(),
                 ex.getMessage(),
@@ -105,12 +101,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponseDTO> handleIllegalArgument(IllegalArgumentException ex,
             HttpServletRequest request) {
-        String correlationId = CorrelationIdUtil.extractOrGenerateCorrelationId(request);
+                String correlationId = extractCorrelationId(request);
 
         log.error("[Correlation-ID: {}] Illegal argument at {} {} | Message: {} | Stack:",
                 correlationId,
-                request.getMethod(),
-                request.getRequestURI(),
+                requestSignature(request),
                 ex.getMessage(),
                 ex);
 
@@ -120,12 +115,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDTO> handleGenericException(Exception ex, HttpServletRequest request) {
-        String correlationId = CorrelationIdUtil.extractOrGenerateCorrelationId(request);
+                String correlationId = extractCorrelationId(request);
 
         log.error("[Correlation-ID: {}] UNHANDLED EXCEPTION at {} {} | Exception Type: {} | Message: {} | Stack:",
                 correlationId,
-                request.getMethod(),
-                request.getRequestURI(),
+                requestSignature(request),
                 ex.getClass().getName(),
                 ex.getMessage(),
                 ex);
@@ -150,4 +144,12 @@ public class GlobalExceptionHandler {
     private boolean isClientErrorCode(String errorCode) {
         return errorCode != null && errorCode.startsWith("SB-4");
     }
+
+        private String extractCorrelationId(HttpServletRequest request) {
+                return CorrelationIdUtil.extractOrGenerateCorrelationId(request);
+        }
+
+        private String requestSignature(HttpServletRequest request) {
+                return request.getMethod() + " " + request.getRequestURI();
+        }
 }
