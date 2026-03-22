@@ -80,8 +80,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponseDTO> handleConversionFailed(ConversionFailedException ex,
             HttpServletRequest request) {
                 String correlationId = extractCorrelationId(request);
-        boolean isClientError = isClientErrorCode(ex.getErrorCode());
-        HttpStatus status = isClientError ? HttpStatus.BAD_REQUEST : HttpStatus.INTERNAL_SERVER_ERROR;
+                HttpStatus status = resolveStatusFromErrorCode(ex.getErrorCode());
 
         String clientMessage = isClientError
                 ? "Conversion failed. Please verify your input data."
@@ -150,8 +149,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(status).body(dto);
     }
 
-    private boolean isClientErrorCode(String errorCode) {
-        return errorCode != null && errorCode.startsWith("SB-4");
+        private HttpStatus resolveStatusFromErrorCode(String errorCode) {
+                SwiftErrorCode resolved = SwiftErrorCode.fromCode(errorCode);
+                if (resolved.isClientError()) {
+                        return HttpStatus.BAD_REQUEST;
+                }
+                return HttpStatus.INTERNAL_SERVER_ERROR;
     }
 
         private String extractCorrelationId(HttpServletRequest request) {
