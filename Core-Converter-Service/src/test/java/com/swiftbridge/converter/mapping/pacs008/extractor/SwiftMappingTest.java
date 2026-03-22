@@ -82,9 +82,7 @@ class SwiftMappingTest {
     @DisplayName("Extract BIC codes for debtor and creditor")
     void testExtractBicCodes() throws Exception {
 
-        Document document = parseFixture("valid-pacs008.xml");
-
-        Pacs008Fields fields = fieldExtractor.extract(document);
+        Pacs008Fields fields = extractFieldsFromFixture("valid-pacs008.xml");
 
         assertNotNull(fields.debtorBic(), "Debtor BIC should be extracted");
         assertEquals("WESTGB2L", fields.debtorBic(), "Debtor BIC should match pacs.008");
@@ -96,9 +94,7 @@ class SwiftMappingTest {
     @DisplayName("Extract reference and UETR fields (optional but present)")
     void testExtractOptionalReferenceAndUetr() throws Exception {
 
-        Document document = parseFixture("valid-pacs008.xml");
-
-        Pacs008Fields fields = fieldExtractor.extract(document);
+        Pacs008Fields fields = extractFieldsFromFixture("valid-pacs008.xml");
 
         assertNotNull(fields.reference(), "Reference should be extracted");
         assertEquals("12345ABCDE", fields.reference(), "Reference should match pacs.008");
@@ -110,9 +106,7 @@ class SwiftMappingTest {
     @DisplayName("Validate that non-empty fields are correctly populated")
     void testFieldValidationForNonEmptyValues() throws Exception {
 
-        Document document = parseFixture("valid-pacs008.xml");
-
-        Pacs008Fields fields = fieldExtractor.extract(document);
+        Pacs008Fields fields = extractFieldsFromFixture("valid-pacs008.xml");
 
         assertFalse(fields.amountValue().isEmpty(), "Amount value should not be empty");
         assertFalse(fields.amountCurrency().isEmpty(), "Amount currency should not be empty");
@@ -128,5 +122,9 @@ class SwiftMappingTest {
 
     private Document parseFixture(String filename) throws Exception {
         return xmlParsingService.parseNamespaceAwareXml(readTestResource(filename));
+    }
+
+    private Pacs008Fields extractFieldsFromFixture(String filename) throws Exception {
+        return fieldExtractor.extract(parseFixture(filename));
     }
 }
