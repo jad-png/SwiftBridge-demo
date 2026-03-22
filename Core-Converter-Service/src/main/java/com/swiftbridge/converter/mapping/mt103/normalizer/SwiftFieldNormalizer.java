@@ -13,6 +13,8 @@ public class SwiftFieldNormalizer {
     private static final DateTimeFormatter ISO_DATE = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final DateTimeFormatter MT_32A_DATE = DateTimeFormatter.ofPattern("yyMMdd");
     private static final String DEFAULT_REFERENCE = "UNKNOWNREF";
+    private static final String DEFAULT_CURRENCY = "USD";
+    private static final int ISO_CURRENCY_LENGTH = 3;
 
     public String normalizeReference(String reference) {
         String normalized = normalizeText(reference);
@@ -54,8 +56,8 @@ public class SwiftFieldNormalizer {
 
     public String normalizeCurrency(String currency) {
         String value = normalizeText(currency).toUpperCase(Locale.ROOT);
-        if (value.length() != 3) {
-            return "USD";
+        if (value.length() != ISO_CURRENCY_LENGTH) {
+            return DEFAULT_CURRENCY;
         }
         return value;
     }
