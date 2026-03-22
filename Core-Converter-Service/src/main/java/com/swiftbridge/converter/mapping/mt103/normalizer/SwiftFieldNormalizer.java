@@ -15,6 +15,8 @@ public class SwiftFieldNormalizer {
     private static final String DEFAULT_REFERENCE = "UNKNOWNREF";
     private static final String DEFAULT_CURRENCY = "USD";
     private static final int ISO_CURRENCY_LENGTH = 3;
+    private static final int BIC8_LENGTH = 8;
+    private static final int BIC11_LENGTH = 11;
 
     public String normalizeReference(String reference) {
         String normalized = normalizeText(reference);
@@ -64,10 +66,10 @@ public class SwiftFieldNormalizer {
 
     public String normalizeBic(String bic) {
         String value = normalizeText(bic).toUpperCase(Locale.ROOT).replace(" ", "");
-        if (value.length() == 8) {
+        if (value.length() == BIC8_LENGTH) {
             return value + "XXX";
         }
-        if (value.length() == 11) {
+        if (value.length() == BIC11_LENGTH) {
             return value;
         }
         return "";
