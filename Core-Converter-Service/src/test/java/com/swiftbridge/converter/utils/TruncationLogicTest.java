@@ -29,7 +29,7 @@ class TruncationLogicTest {
                          "Executive Director Sales Manager Product Development Specialist " +
                          "Financial Services Consultant Business Analyst Systems Engineer";
 
-        TruncationResult result = truncationUtil.truncateNameOrAddress("TestField", longName);
+        TruncationResult result = truncate("TestField", longName);
 
         assertNotNull(result, "TruncationResult should not be null");
         assertTrue(result.truncated(), "Result should be marked as truncated");
@@ -51,7 +51,7 @@ class TruncationLogicTest {
 
         String text = "This is a very long name that should be truncated carefully without breaking words in the middle";
 
-        TruncationResult result = truncationUtil.truncateNameOrAddress("Name", text);
+        TruncationResult result = truncate("Name", text);
 
         List<String> lines = result.lines();
         assertTrue(lines.size() <= MAX_SWIFT_LINES, "Should have at most 4 lines");
@@ -69,7 +69,7 @@ class TruncationLogicTest {
 
         String shortName = "John Smith";
 
-        TruncationResult result = truncationUtil.truncateNameOrAddress("Name", shortName);
+        TruncationResult result = truncate("Name", shortName);
 
         assertFalse(result.truncated(), "Short name should not be marked as truncated");
         assertTrue(result.warning().isBlank(), "No warning should be present");
@@ -83,7 +83,7 @@ class TruncationLogicTest {
 
         String name35 = "A".repeat(35);
 
-        TruncationResult result = truncationUtil.truncateNameOrAddress("Name", name35);
+        TruncationResult result = truncate("Name", name35);
 
         assertFalse(result.truncated(), "35-character name should not be marked as truncated");
         assertEquals(1, result.lines().size(), "Should have only 1 line");
@@ -96,7 +96,7 @@ class TruncationLogicTest {
 
         String name36 = "A".repeat(36);
 
-        TruncationResult result = truncationUtil.truncateNameOrAddress("Name", name36);
+        TruncationResult result = truncate("Name", name36);
 
         assertTrue(result.truncated(), "36-character name should be truncated");
         assertTrue(result.lines().get(0).length() <= MAX_SWIFT_LINE_LENGTH, "First line should not exceed 35 chars");
@@ -124,7 +124,7 @@ class TruncationLogicTest {
 
         String nameWithExtraSpaces = "John    Smith     International     Trading";
 
-        TruncationResult result = truncationUtil.truncateNameOrAddress("Name", nameWithExtraSpaces);
+        TruncationResult result = truncate("Name", nameWithExtraSpaces);
 
         String firstLine = result.lines().get(0);
         assertFalse(firstLine.contains("  "), "Multiple consecutive spaces should be normalized");
@@ -139,7 +139,7 @@ class TruncationLogicTest {
                      "CDEFGHIJ ABCDEFGHIJ ABCDEFGHIJ ABCD " +
                      "DEFGHIJ ABCDEFGHIJ ABCDEFGHIJ ABCDE";
 
-        TruncationResult result = truncationUtil.truncateNameOrAddress("TestField", text);
+        TruncationResult result = truncate("TestField", text);
 
         List<String> lines = result.lines();
         assertEquals(4, lines.size(), "Should have 4 lines");
@@ -156,7 +156,7 @@ class TruncationLogicTest {
 
         String nameWithSpecialChars = "ABC-123 Company GmbH & Co. KG Ltd. (USA) Inc.";
 
-        TruncationResult result = truncationUtil.truncateNameOrAddress("Company", nameWithSpecialChars);
+        TruncationResult result = truncate("Company", nameWithSpecialChars);
 
         assertNotNull(result, "Result should not be null");
         List<String> lines = result.lines();
@@ -175,7 +175,7 @@ class TruncationLogicTest {
                          "The name is from a company that might have multiple words in its full " +
                          "legal name and additional descriptive information that needs truncation.";
 
-        TruncationResult result = truncationUtil.truncateNameOrAddress("DebentorName", longName);
+        TruncationResult result = truncate("DebentorName", longName);
 
         assertTrue(result.truncated(), "Long name should be truncated");
         String warning = result.warning();
@@ -191,7 +191,7 @@ class TruncationLogicTest {
 
         String nameWithAccents = "José García López Société Générale München";
 
-        TruncationResult result = truncationUtil.truncateNameOrAddress("InternationalName", nameWithAccents);
+        TruncationResult result = truncate("InternationalName", nameWithAccents);
 
         List<String> lines = result.lines();
         for (String line : lines) {
@@ -201,5 +201,9 @@ class TruncationLogicTest {
 
     private void assertFitsSwiftLine(String line, String message) {
         assertTrue(line.length() <= MAX_SWIFT_LINE_LENGTH, message);
+    }
+
+    private TruncationResult truncate(String fieldName, String value) {
+        return truncationUtil.truncateNameOrAddress(fieldName, value);
     }
 }
