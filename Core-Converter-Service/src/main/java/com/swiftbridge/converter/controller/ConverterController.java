@@ -33,7 +33,7 @@ public class ConverterController {
         log.info("Request received for file: {}", file.getOriginalFilename());
         long startNanos = System.nanoTime();
 
-        String xmlContent = new String (file.getBytes(), StandardCharsets.UTF_8);
+        String xmlContent = readXmlContent(file);
 
         ConversionResult conversionResult = xmlToMtMapper.convertPacs008ToMt103(xmlContent);
         long processingTimeMs = Math.max(0L, (System.nanoTime() - startNanos) / 1_000_000L);
@@ -45,5 +45,9 @@ public class ConverterController {
             .warnings(conversionResult.warnings())
             .processingTimeMs(processingTimeMs)
             .build());
+    }
+
+    private String readXmlContent(MultipartFile file) throws IOException {
+        return new String(file.getBytes(), StandardCharsets.UTF_8);
     }
 }
