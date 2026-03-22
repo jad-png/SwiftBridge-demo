@@ -68,15 +68,8 @@ public class Pacs008ToMt103Mapper {
             TextBlock block4 = buildBlock4(mt20, mt32A, mt50k, mt52A, mt57A, mt59, mt71A);
             TrailerBlock block5 = buildBlock5();
 
-            Mt103Message mt103Message = Mt103Message.builder()
-                .block1(block1)
-                .block2(block2)
-                .block3(block3)
-                .block4(block4)
-                .block5(block5)
-                .build();
-
-            String mt103 = mt103SerializationService.serialize(mt103Message);
+            Mt103Message mt103Message = buildMt103Message(block1, block2, block3, block4, block5);
+            String mt103 = serializeMt103(mt103Message);
 
             List<String> warnings = new ArrayList<>();
             if (mt50kResult.truncated() && !mt50kResult.warning().isBlank()) {
@@ -188,6 +181,26 @@ public class Pacs008ToMt103Mapper {
 
     private TrailerBlock buildBlock5() {
         return TrailerBlock.builder().build();
+    }
+
+    private Mt103Message buildMt103Message(
+        BasicHeaderBlock block1,
+        ApplicationHeaderBlock block2,
+        UserHeaderBlock block3,
+        TextBlock block4,
+        TrailerBlock block5
+    ) {
+        return Mt103Message.builder()
+            .block1(block1)
+            .block2(block2)
+            .block3(block3)
+            .block4(block4)
+            .block5(block5)
+            .build();
+    }
+
+    private String serializeMt103(Mt103Message mt103Message) {
+        return mt103SerializationService.serialize(mt103Message);
     }
 
     private String resolveUetr(String uetr, String fallbackReference) {
