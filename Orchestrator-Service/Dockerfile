@@ -9,9 +9,11 @@ RUN mvn dependency:go-offline -B
 
 FROM dependencies AS builder
 
+ARG SKIP_TESTS=true
+
 COPY src ./src
 
-RUN mvn clean package -DskipTests -q
+RUN mvn clean package -DskipTests=${SKIP_TESTS} -q
 
 FROM eclipse-temurin:17-jre-alpine
 
