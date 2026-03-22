@@ -11,9 +11,9 @@ public class CorrelationIdUtil {
     public static final String MDC_CORRELATION_ID = "correlationId";
 
     public static String extractOrGenerateCorrelationId(HttpServletRequest request) {
-        String correlationId = request.getHeader(CORRELATION_ID_HEADER);
+        String correlationId = normalizeCorrelationId(request.getHeader(CORRELATION_ID_HEADER));
 
-        if (correlationId == null || correlationId.isBlank()) {
+        if (correlationId.isBlank()) {
             correlationId = UUID.randomUUID().toString();
         }
 
@@ -23,8 +23,9 @@ public class CorrelationIdUtil {
     }
 
     public static void setCorrelationId(String correlationId) {
-        if (correlationId != null && !correlationId.isBlank()) {
-            MDC.put(MDC_CORRELATION_ID, correlationId);
+        String normalizedCorrelationId = normalizeCorrelationId(correlationId);
+        if (!normalizedCorrelationId.isBlank()) {
+            MDC.put(MDC_CORRELATION_ID, normalizedCorrelationId);
         }
     }
 
@@ -34,5 +35,9 @@ public class CorrelationIdUtil {
 
     public static void clearCorrelationId() {
         MDC.remove(MDC_CORRELATION_ID);
+    }
+
+    private static String normalizeCorrelationId(String correlationId) {
+        return correlationId == null ? "" : correlationId.trim();
     }
 }
