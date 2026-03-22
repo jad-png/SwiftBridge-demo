@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 import java.util.Objects;
 
 @Getter
-@Builder
-@NoArgsConstructor
+@Builder(toBuilder = true)
+@NoArgsConstructor(force = true)
 @AllArgsConstructor
 public class BasicHeaderBlock {
 
