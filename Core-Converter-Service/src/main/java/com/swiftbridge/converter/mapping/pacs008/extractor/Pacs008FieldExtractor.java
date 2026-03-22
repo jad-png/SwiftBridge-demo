@@ -67,7 +67,7 @@ public class Pacs008FieldExtractor {
         List<String> debtorAddress = extractStructuredAddress(xpath, document, Pacs008Xpaths.DEBTOR_ADDRESS_ROOT);
         List<String> creditorAddress = extractStructuredAddress(xpath, document, Pacs008Xpaths.CREDITOR_ADDRESS_ROOT);
 
-        return new Pacs008Fields(
+        return buildFields(
             reference,
             uetr,
             amountValue,
@@ -252,6 +252,36 @@ public class Pacs008FieldExtractor {
 
     private boolean hasNormalizedValue(String value) {
         return value != null && !normalizer.normalizeText(value).isEmpty();
+    }
+
+    private Pacs008Fields buildFields(
+        String reference,
+        String uetr,
+        String amountValue,
+        String amountCurrency,
+        String settlementDate,
+        String debtorName,
+        String creditorName,
+        String debtorBic,
+        String creditorBic,
+        String chargeBearer,
+        List<String> debtorAddress,
+        List<String> creditorAddress
+    ) {
+        return new Pacs008Fields(
+            reference,
+            uetr,
+            amountValue,
+            amountCurrency,
+            settlementDate,
+            debtorName,
+            creditorName,
+            debtorBic,
+            creditorBic,
+            chargeBearer,
+            debtorAddress,
+            creditorAddress
+        );
     }
 
     private static final class Pacs008NamespaceContext implements NamespaceContext {
