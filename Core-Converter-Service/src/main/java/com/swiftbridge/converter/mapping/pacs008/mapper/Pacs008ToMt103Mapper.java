@@ -33,6 +33,8 @@ import com.swiftbridge.converter.utils.TruncationResult;
 public class Pacs008ToMt103Mapper {
 
     private static final String MAPPING_FAILURE_PREFIX = "Failed to convert pacs.008 to MT103: ";
+    private static final String LOGICAL_TERMINAL_FALLBACK = "BANKBEBBAXXX";
+    private static final int LOGICAL_TERMINAL_LENGTH = 12;
 
     private final XmlParsingService xmlParsingService;
     private final Pacs008FieldExtractor fieldExtractor;
@@ -85,9 +87,9 @@ public class Pacs008ToMt103Mapper {
 
     private String toLogicalTerminal(String bic) {
         String normalizedBic = normalizer.normalizeBic(bic);
-        String terminal = normalizedBic.isBlank() ? "BANKBEBBAXXX" : normalizedBic + "X";
-        if (terminal.length() >= 12) {
-            return terminal.substring(0, 12);
+        String terminal = normalizedBic.isBlank() ? LOGICAL_TERMINAL_FALLBACK : normalizedBic + "X";
+        if (terminal.length() >= LOGICAL_TERMINAL_LENGTH) {
+            return terminal.substring(0, LOGICAL_TERMINAL_LENGTH);
         }
         return String.format(Locale.ROOT, "%-12s", terminal).replace(' ', 'X');
     }
