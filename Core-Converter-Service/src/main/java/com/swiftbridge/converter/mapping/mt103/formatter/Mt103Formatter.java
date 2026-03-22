@@ -108,7 +108,7 @@ public class Mt103Formatter {
         StringBuilder current = new StringBuilder();
 
         for (String word : words) {
-            if (word.isBlank()) {
+            if (shouldSkipWord(word)) {
                 continue;
             }
 
@@ -123,7 +123,7 @@ public class Mt103Formatter {
                 continue;
             }
 
-            lines.add(trimToLength(current.toString(), lineLength));
+            appendWrappedLine(lines, current.toString(), lineLength);
             current.setLength(0);
             current.append(word);
 
@@ -140,6 +140,14 @@ public class Mt103Formatter {
             return new ArrayList<>(lines.subList(0, maxLines));
         }
         return lines;
+    }
+
+    private boolean shouldSkipWord(String word) {
+        return word.isBlank();
+    }
+
+    private void appendWrappedLine(List<String> lines, String value, int lineLength) {
+        lines.add(trimToLength(value, lineLength));
     }
 
     public String trimToLength(String value, int maxLength) {
