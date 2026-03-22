@@ -59,13 +59,7 @@ public class Pacs008ToMt103Mapper {
             String mt57A = mapCreditorBic(fields);
             String mt71A = mapChargeBearer(fields);
 
-            BasicHeaderBlock block1 = BasicHeaderBlock.builder()
-                .applicationId("F")
-                .serviceId("01")
-                .logicalTerminal(toLogicalTerminal(mt52A))
-                .sessionNumber(buildSessionNumber())
-                .sequenceNumber(buildSequenceNumber())
-                .build();
+            BasicHeaderBlock block1 = buildBlock1(mt52A);
 
             ApplicationHeaderBlock block2 = ApplicationHeaderBlock.builder()
                 .inputOutputId("I")
@@ -169,6 +163,16 @@ public class Pacs008ToMt103Mapper {
 
     private String mapChargeBearer(Pacs008Fields fields) {
         return normalizer.mapChargeBearer(fields.chargeBearer());
+    }
+
+    private BasicHeaderBlock buildBlock1(String senderBic) {
+        return BasicHeaderBlock.builder()
+            .applicationId("F")
+            .serviceId("01")
+            .logicalTerminal(toLogicalTerminal(senderBic))
+            .sessionNumber(buildSessionNumber())
+            .sequenceNumber(buildSequenceNumber())
+            .build();
     }
 
     private String resolveUetr(String uetr, String fallbackReference) {
