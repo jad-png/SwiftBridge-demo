@@ -9,4 +9,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidXmlFile {
     long maxSize() default 10 * 1024 * 1024;
+    String[] allowedContentTypes() default {"application/xml", "text/xml"};
+    String requiredRootElement() default "Document";
 }
