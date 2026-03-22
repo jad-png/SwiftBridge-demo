@@ -15,7 +15,7 @@ COPY src ./src
 
 RUN mvn clean package -DskipTests=${SKIP_TESTS} -q
 
-FROM eclipse-temurin:17-jre-alpine
+FROM eclipse-temurin:17-jre-alpine AS runner
 
 LABEL maintainer="SwiftBridge Team"
 LABEL description="SwiftBridge Core Converter Service - ISO 20022 to MT103 Conversion Engine"
