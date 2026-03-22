@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.02">
+    <CstmrCdtTrfInitn>
+        <GrpHdr>
+            <MsgId>ABCD20260320001234</MsgId>
+            <CreDtTm>2026-03-20T10:15:30</CreDtTm>
+            <NbOfTxns>1</NbOfTxns>
+            <CtrlSum>500000.00</CtrlSum>
+        </GrpHdr>
+        <PmtInfo>
+            <PmtInfId>ABCD20260320001234</PmtInfId>
+            <PmtMtd>TRF</PmtMtd>
+            <CdtTrfTxInf>
+                <PmtId>
+                    <InstrId>12345ABCDE</InstrId>
+                </PmtId>
+                <Amt>
+
+                </Amt>
+                <Cdtr>
+                    <Nm>JANE DOE</Nm>
+                </Cdtr>
+                <CdtrAgt>
+                    <FinInstnId>
+                        <BICFI>CHUSUSNYC</BICFI>
+                    </FinInstnId>
+                </CdtrAgt>
+            </CdtTrfTxInf>
+        </PmtInfo>
+    </CstmrCdtTrfInitn>
+</Document>
