@@ -79,6 +79,9 @@ class ErrorCodeMappingTest {
         assertEquals(HttpStatus.BAD_REQUEST, SwiftErrorCode.ERR_INVALID_CURRENCY.getHttpStatus());
         assertEquals(HttpStatus.BAD_REQUEST, SwiftErrorCode.ERR_INVALID_XML_STRUCTURE.getHttpStatus());
         assertEquals(HttpStatus.BAD_REQUEST, SwiftErrorCode.ERR_DEBTOR_NAME_MISSING.getHttpStatus());
+
+        assertTrue(SwiftErrorCode.ERR_MAPPING_AMOUNT_MISSING.isClientError());
+        assertTrue(SwiftErrorCode.ERR_INVALID_CURRENCY.isClientError());
     }
 
     @Test
@@ -87,6 +90,9 @@ class ErrorCodeMappingTest {
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, SwiftErrorCode.ERR_INTERNAL_SERVER_ERROR.getHttpStatus());
         assertEquals(HttpStatus.SERVICE_UNAVAILABLE, SwiftErrorCode.ERR_CORE_SERVICE_UNAVAILABLE.getHttpStatus());
+
+        assertTrue(SwiftErrorCode.ERR_INTERNAL_SERVER_ERROR.isServerError());
+        assertTrue(SwiftErrorCode.ERR_CORE_SERVICE_UNAVAILABLE.isServerError());
     }
 
     @Test
