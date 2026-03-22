@@ -4,21 +4,24 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Singular;
 
 import java.util.List;
 import java.util.Objects;
 
 @Getter
-@Builder
+@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class TextBlock {
 
     private String tag20;
     private String tag32A;
+    @Singular("tag50KLine")
     private List<String> tag50KLines;
     private String tag52A;
     private String tag57A;
+    @Singular("tag59Line")
     private List<String> tag59Lines;
     private String tag71A;
 
