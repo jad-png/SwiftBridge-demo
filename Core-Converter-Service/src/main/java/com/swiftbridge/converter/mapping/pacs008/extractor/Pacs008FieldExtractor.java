@@ -34,19 +34,21 @@ public class Pacs008FieldExtractor {
     public Pacs008Fields extract(Document document) {
         XPath xpath = buildXPath();
 
-        String reference = evaluate(xpath, document, Pacs008Xpaths.REFERENCE_INSTR_ID);
+        ScalarFields scalarFields = extractScalarFields(xpath, document);
 
-        String uetr = evaluate(xpath, document, Pacs008Xpaths.UETR);
+        String reference = scalarFields.reference();
 
-        String amountValue = evaluate(xpath, document, Pacs008Xpaths.AMOUNT_VALUE_INSTD);
+        String uetr = scalarFields.uetr();
 
-        String amountCurrency = evaluate(xpath, document, Pacs008Xpaths.AMOUNT_CCY_INSTD);
+        String amountValue = scalarFields.amountValue();
 
-        String settlementDate = evaluate(xpath, document, Pacs008Xpaths.SETTLEMENT_DATE_INTERBANK);
+        String amountCurrency = scalarFields.amountCurrency();
 
-        String debtorName = evaluate(xpath, document, Pacs008Xpaths.DEBTOR_NAME);
+        String settlementDate = scalarFields.settlementDate();
 
-        String creditorName = evaluate(xpath, document, Pacs008Xpaths.CREDITOR_NAME);
+        String debtorName = scalarFields.debtorName();
+
+        String creditorName = scalarFields.creditorName();
 
         if (amountValue.isEmpty()) {
             throw new SwiftMappingException(
@@ -115,6 +117,17 @@ public class Pacs008FieldExtractor {
             debtorAddress,
             creditorAddress
         );
+    }
+
+    private ScalarFields extractScalarFields(XPath xpath, Document document) {
+        String reference = evaluate(xpath, document, Pacs008Xpaths.REFERENCE_INSTR_ID);
+        String uetr = evaluate(xpath, document, Pacs008Xpaths.UETR);
+        String amountValue = evaluate(xpath, document, Pacs008Xpaths.AMOUNT_VALUE_INSTD);
+        String amountCurrency = evaluate(xpath, document, Pacs008Xpaths.AMOUNT_CCY_INSTD);
+        String settlementDate = evaluate(xpath, document, Pacs008Xpaths.SETTLEMENT_DATE_INTERBANK);
+        String debtorName = evaluate(xpath, document, Pacs008Xpaths.DEBTOR_NAME);
+        String creditorName = evaluate(xpath, document, Pacs008Xpaths.CREDITOR_NAME);
+        return new ScalarFields(reference, uetr, amountValue, amountCurrency, settlementDate, debtorName, creditorName);
     }
 
     private XPath buildXPath() {
@@ -221,5 +234,16 @@ public class Pacs008FieldExtractor {
             }
             return Collections.singleton(prefix).iterator();
         }
+    }
+
+    private record ScalarFields(
+        String reference,
+        String uetr,
+        String amountValue,
+        String amountCurrency,
+        String settlementDate,
+        String debtorName,
+        String creditorName
+    ) {
     }
 }
