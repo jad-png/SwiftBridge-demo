@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Builder
@@ -27,5 +28,12 @@ public class TextBlock {
 
     public int getTag59LineCount() {
         return tag59Lines == null ? 0 : tag59Lines.size();
+    }
+
+    public void validateMandatoryTags() {
+        Objects.requireNonNull(tag20, "tag20 is required");
+        Objects.requireNonNull(tag32A, "tag32A is required");
+        Objects.requireNonNull(tag59Lines, "tag59 is required");
+        Objects.requireNonNull(tag71A, "tag71A is required");
     }
 }
