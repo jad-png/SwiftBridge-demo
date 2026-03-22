@@ -81,6 +81,7 @@ public class GlobalExceptionHandler {
             HttpServletRequest request) {
                 String correlationId = extractCorrelationId(request);
                 HttpStatus status = resolveStatusFromErrorCode(ex.getErrorCode());
+        boolean isClientError = status.is4xxClientError();
 
         String clientMessage = isClientError
                 ? "Conversion failed. Please verify your input data."
