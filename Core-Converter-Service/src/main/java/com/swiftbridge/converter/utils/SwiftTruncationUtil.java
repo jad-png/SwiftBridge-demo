@@ -94,7 +94,7 @@ public class SwiftTruncationUtil {
     }
 
     private String mergeValues(List<String> values) {
-        return String.join(" ", values).replaceAll("\\s+", " ").trim();
+        return normalizeWhitespace(String.join(" ", values));
     }
 
     private String normalizeWhitespace(String value) {
@@ -102,8 +102,8 @@ public class SwiftTruncationUtil {
     }
 
     private boolean isTruncated(String original, List<String> truncatedLines) {
-        String normalizedOriginal = original.replaceAll("\\s+", " ").trim();
-        String rebuilt = String.join(" ", truncatedLines).replaceAll("\\s+", " ").trim();
+        String normalizedOriginal = normalizeWhitespace(original);
+        String rebuilt = normalizeWhitespace(String.join(" ", truncatedLines));
         return !normalizedOriginal.equals(rebuilt);
     }
 }
