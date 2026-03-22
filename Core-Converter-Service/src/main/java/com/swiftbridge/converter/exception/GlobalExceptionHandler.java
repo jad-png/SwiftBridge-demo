@@ -38,7 +38,7 @@ public class GlobalExceptionHandler {
                 message,
                 ex);
 
-        return buildSecureResponse(HttpStatus.BAD_REQUEST, "SB-4000", message);
+        return buildSecureResponse(HttpStatus.BAD_REQUEST, CLIENT_ERROR_CODE, message, request);
     }
 
     @ExceptionHandler(FileValidationException.class)
@@ -52,8 +52,8 @@ public class GlobalExceptionHandler {
                 ex.getMessage(),
                 ex);
 
-        return buildSecureResponse(HttpStatus.BAD_REQUEST, "SB-4000",
-                "File validation failed. Please ensure the file is a valid XML document.");
+        return buildSecureResponse(HttpStatus.BAD_REQUEST, CLIENT_ERROR_CODE,
+                "File validation failed. Please ensure the file is a valid XML document.", request);
     }
 
     @ExceptionHandler(SwiftMappingException.class)
@@ -72,7 +72,8 @@ public class GlobalExceptionHandler {
         return buildSecureResponse(
                 HttpStatus.BAD_REQUEST,
                 errorCode.getCode(),
-                errorCode.getMessage());
+                errorCode.getMessage(),
+                request);
     }
 
     @ExceptionHandler(ConversionFailedException.class)
@@ -95,7 +96,7 @@ public class GlobalExceptionHandler {
                 ex.getMessage(),
                 ex);
 
-        return buildSecureResponse(status, ex.getErrorCode(), clientMessage);
+        return buildSecureResponse(status, ex.getErrorCode(), clientMessage, request);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
@@ -109,8 +110,8 @@ public class GlobalExceptionHandler {
                 ex.getMessage(),
                 ex);
 
-        return buildSecureResponse(HttpStatus.BAD_REQUEST, "SB-4000",
-                CLIENT_ERROR_MESSAGE);
+        return buildSecureResponse(HttpStatus.BAD_REQUEST, CLIENT_ERROR_CODE,
+                CLIENT_ERROR_MESSAGE, request);
     }
 
     @ExceptionHandler(Exception.class)
@@ -125,20 +126,28 @@ public class GlobalExceptionHandler {
                 ex);
 
         return buildSecureResponse(HttpStatus.INTERNAL_SERVER_ERROR, SERVER_ERROR_CODE,
-                SERVER_ERROR_MESSAGE);
+                SERVER_ERROR_MESSAGE, request);
     }
 
     private ResponseEntity<ErrorResponseDTO> buildSecureResponse(HttpStatus status,
             String errorCode,
-            String message) {
-        ErrorResponseDTO payload = ErrorResponseDTO.builder()
-                .timestamp(Instant.now().toString())
-                .errorCode(errorCode)
-                .message(message)
+            String message,
+            HttpServletRequest request) {
+        String correlationId = extractCorrelationId(request);
+        ErrorResponse payload = ErrorResponse.of(
+                Instant.now().toString(),
+                status.value(),
+                status.getReasonPhrase(),
+                errorCode,
+                message,
+                request.getRequestURI());
 
+        ErrorResponseDTO dto = payload.toDto().toBuilder()
+                .correlationId(correlationId)
                 .build();
+        dto.validate();
 
-        return ResponseEntity.status(status).body(payload);
+        return ResponseEntity.status(status).body(dto);
     }
 
     private boolean isClientErrorCode(String errorCode) {
