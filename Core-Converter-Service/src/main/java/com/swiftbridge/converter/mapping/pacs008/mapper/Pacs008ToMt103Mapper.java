@@ -63,9 +63,7 @@ public class Pacs008ToMt103Mapper {
 
             ApplicationHeaderBlock block2 = buildBlock2(mt57A);
 
-            UserHeaderBlock block3 = UserHeaderBlock.builder()
-                .uetr(resolveUetr(fields.uetr(), fields.reference()))
-                .build();
+            UserHeaderBlock block3 = buildBlock3(fields);
 
             TextBlock block4 = TextBlock.builder()
                 .tag20(mt20)
@@ -176,6 +174,12 @@ public class Pacs008ToMt103Mapper {
             .messageType("103")
             .receiverLogicalTerminal(toLogicalTerminal(receiverBic))
             .priority("N")
+            .build();
+    }
+
+    private UserHeaderBlock buildBlock3(Pacs008Fields fields) {
+        return UserHeaderBlock.builder()
+            .uetr(resolveUetr(fields.uetr(), fields.reference()))
             .build();
     }
 
