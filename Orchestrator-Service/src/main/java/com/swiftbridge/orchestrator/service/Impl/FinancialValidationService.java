@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 
 import com.swiftbridge.orchestrator.service.ConversionValidator;
 import com.swiftbridge.orchestrator.service.FinancialValidationException;
-import com.swiftbridge.orchestrator.service.ConversionValidator.ValidationResult;
 
 import java.math.BigDecimal;
 import java.util.Currency;
