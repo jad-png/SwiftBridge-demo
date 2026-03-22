@@ -69,9 +69,7 @@ class SwiftMappingTest {
             "Should throw SwiftMappingException when amount is missing"
         );
 
-        assertNotNull(exception.getErrorCode(), "Error code should not be null");
-        assertEquals("SB-4001", exception.getErrorCode().getCode(),
-            "Error code should be SB-4001 for missing amount");
+        assertAmountMissingError(exception);
     }
 
     @Test
@@ -134,5 +132,13 @@ class SwiftMappingTest {
         assertFalse(fields.debtorName().isEmpty(), "Debtor name should not be empty");
         assertFalse(fields.creditorName().isEmpty(), "Creditor name should not be empty");
         assertFalse(fields.settlementDate().isEmpty(), "Settlement date should not be empty");
+    }
+
+    private void assertAmountMissingError(SwiftMappingException exception) {
+        assertNotNull(exception.getErrorCode(), "Error code should not be null");
+        assertEquals(SwiftErrorCode.ERR_MAPPING_AMOUNT_MISSING, exception.getErrorCode(),
+            "Error code should map to missing amount");
+        assertEquals("SB-4001", exception.getErrorCode().getCode(),
+            "Error code should be SB-4001 for missing amount");
     }
 }
