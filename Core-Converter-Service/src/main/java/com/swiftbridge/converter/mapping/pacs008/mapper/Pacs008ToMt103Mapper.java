@@ -71,13 +71,7 @@ public class Pacs008ToMt103Mapper {
             Mt103Message mt103Message = buildMt103Message(block1, block2, block3, block4, block5);
             String mt103 = serializeMt103(mt103Message);
 
-            List<String> warnings = new ArrayList<>();
-            if (mt50kResult.truncated() && !mt50kResult.warning().isBlank()) {
-                warnings.add(mt50kResult.warning());
-            }
-            if (mt59Result.truncated() && !mt59Result.warning().isBlank()) {
-                warnings.add(mt59Result.warning());
-            }
+            List<String> warnings = collectWarnings(mt50kResult, mt59Result);
 
             log.info("MT103 conversion completed successfully");
             return new ConversionResult(mt103, warnings);
@@ -201,6 +195,19 @@ public class Pacs008ToMt103Mapper {
 
     private String serializeMt103(Mt103Message mt103Message) {
         return mt103SerializationService.serialize(mt103Message);
+    }
+
+    private List<String> collectWarnings(TruncationResult mt50kResult, TruncationResult mt59Result) {
+        List<String> warnings = new ArrayList<>();
+        addWarningIfTruncated(warnings, mt50kResult);
+        addWarningIfTruncated(warnings, mt59Result);
+        return warnings;
+    }
+
+    private void addWarningIfTruncated(List<String> warnings, TruncationResult truncationResult) {
+        if (truncationResult.truncated() && !truncationResult.warning().isBlank()) {
+            warnings.add(truncationResult.warning());
+        }
     }
 
     private String resolveUetr(String uetr, String fallbackReference) {
