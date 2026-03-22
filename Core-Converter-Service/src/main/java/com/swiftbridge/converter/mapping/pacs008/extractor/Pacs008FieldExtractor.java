@@ -27,6 +27,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class Pacs008FieldExtractor {
 
+    private static final String DOC_PREFIX = "doc";
     private static final String PACS_008_NS = "urn:iso:std:iso:20022:tech:xsd:pacs.008.001.02";
 
     private final SwiftFieldNormalizer normalizer;
@@ -259,7 +260,7 @@ public class Pacs008FieldExtractor {
             if (prefix == null) {
                 throw new IllegalArgumentException("Prefix cannot be null");
             }
-            if ("doc".equals(prefix)) {
+            if (DOC_PREFIX.equals(prefix)) {
                 return PACS_008_NS;
             }
             if ("xml".equals(prefix)) {
@@ -271,7 +272,7 @@ public class Pacs008FieldExtractor {
         @Override
         public String getPrefix(String namespaceURI) {
             if (PACS_008_NS.equals(namespaceURI)) {
-                return "doc";
+                return DOC_PREFIX;
             }
             return null;
         }
