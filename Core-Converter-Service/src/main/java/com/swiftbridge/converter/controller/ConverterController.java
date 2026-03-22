@@ -1,11 +1,13 @@
 package com.swiftbridge.converter.controller;
 
 import com.swiftbridge.converter.aspect.annotation.ValidXmlFile;
+import com.swiftbridge.converter.dto.ConversionResponse;
+import com.swiftbridge.converter.exception.FileValidationException;
+import com.swiftbridge.converter.mapping.model.ConversionResult;
 import com.swiftbridge.converter.service.XmlToMtMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.ConversionService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,24 +19,33 @@ import java.nio.charset.StandardCharsets;
 @RestController
 @RequestMapping("/internal/convert")
 @Slf4j
+@RequiredArgsConstructor
 public class ConverterController {
 
     @Autowired
     private XmlToMtMapper xmlToMtMapper;
-    @Autowired
-    private ConversionService conversionService;
 
     @PostMapping(
-        consumes = MediaType.TEXT_PLAIN_VALUE,
-        produces = MediaType.TEXT_PLAIN_VALUE
+        consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ValidXmlFile
-    public ResponseEntity<?> convertPacs008ToMt103(@RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseEntity<?> convertPacs008ToMt103(@RequestParam("file") MultipartFile file)
+        throws IOException, FileValidationException {
         log.info("Request received for file: {}", file.getOriginalFilename());
+        long startNanos = System.nanoTime();
 
         String xmlContent = new String (file.getBytes(), StandardCharsets.UTF_8);
 
-//        String mt03Result = conversionService.convert();
-        return ResponseEntity.ok();
+        ConversionResult conversionResult = xmlToMtMapper.convertPacs008ToMt103(xmlContent);
+        long processingTimeMs = Math.max(0L, (System.nanoTime() - startNanos) / 1_000_000L);
+
+        log.info("Successfully generated MT103 for {} in {}ms", file.getOriginalFilename(), processingTimeMs);
+
+        return ResponseEntity.ok(ConversionResponse.builder()
+            .mt103(conversionResult.mt103())
+            .warnings(conversionResult.warnings())
+            .processingTimeMs(processingTimeMs)
+            .build());
     }
 }
