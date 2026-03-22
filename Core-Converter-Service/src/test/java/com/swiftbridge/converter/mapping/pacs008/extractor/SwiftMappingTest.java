@@ -78,10 +78,8 @@ class SwiftMappingTest {
 
         Pacs008Fields fields = extractFieldsFromFixture("valid-pacs008.xml");
 
-        assertNotNull(fields.debtorBic(), "Debtor BIC should be extracted");
-        assertEquals("WESTGB2L", fields.debtorBic(), "Debtor BIC should match pacs.008");
-        assertNotNull(fields.creditorBic(), "Creditor BIC should be extracted");
-        assertEquals("CHUSUSNYC", fields.creditorBic(), "Creditor BIC should match pacs.008");
+        assertBic(fields.debtorBic(), "WESTGB2L", "Debtor BIC");
+        assertBic(fields.creditorBic(), "CHUSUSNYC", "Creditor BIC");
     }
 
     @Test
@@ -140,5 +138,10 @@ class SwiftMappingTest {
             "Error code should map to missing amount");
         assertEquals("SB-4001", exception.getErrorCode().getCode(),
             "Error code should be SB-4001 for missing amount");
+    }
+
+    private void assertBic(String actualBic, String expectedBic, String label) {
+        assertNotNull(actualBic, label + " should be extracted");
+        assertEquals(expectedBic, actualBic, label + " should match pacs.008");
     }
 }
