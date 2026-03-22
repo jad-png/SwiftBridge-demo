@@ -26,8 +26,20 @@ public class ErrorResponseDTO {
     @JsonProperty("timestamp")
     private String timestamp;
 
+    @JsonProperty("status")
+    private Integer status;
+
+    @JsonProperty("path")
+    private String path;
+
+    @JsonProperty("correlationId")
+    private String correlationId;
+
     public void validate() {
         Objects.requireNonNull(errorCode, "errorCode is required");
         Objects.requireNonNull(message, "message is required");
+        if (status != null && status < 100) {
+            throw new IllegalArgumentException("status must be a valid HTTP status code");
+        }
     }
 }
