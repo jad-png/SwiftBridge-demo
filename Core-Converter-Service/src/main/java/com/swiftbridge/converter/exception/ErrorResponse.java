@@ -1,5 +1,6 @@
 package com.swiftbridge.converter.exception;
 
+import com.swiftbridge.converter.dto.ErrorResponseDTO;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -21,6 +22,16 @@ public class ErrorResponse {
             .error(error)
             .errorCode(errorCode)
             .message(message)
+            .path(path)
+            .build();
+    }
+
+    public ErrorResponseDTO toDto() {
+        return ErrorResponseDTO.builder()
+            .timestamp(timestamp)
+            .errorCode(errorCode)
+            .message(message)
+            .status(status)
             .path(path)
             .build();
     }
