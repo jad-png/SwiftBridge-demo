@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.02">
+    <CstmrCdtTrfInitn>
+        <PmtInfo>
+            <Dbtr><Nm>Debtor</Nm></Dbtr>
+            <CdtTrfTxInf>
+                <PmtId><InstrId>REF001</InstrId></PmtId>
+                <Amt>
+                    <InstdAmt Ccy="USD">500000.00</InstdAmt>
+                </Amt>
+                <IntrBkSttlmAmt Ccy="USD">500000.00</IntrBkSttlmAmt>
+                <Cdtr></Cdtr>
+                <IntrBkSttlmDt>2026-03-20</IntrBkSttlmDt>
+            </CdtTrfTxInf>
+        </PmtInfo>
+    </CstmrCdtTrfInitn>
+</Document>
