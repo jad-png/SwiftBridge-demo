@@ -7,7 +7,6 @@ import com.swiftbridge.converter.mapping.model.ConversionResult;
 import com.swiftbridge.converter.service.XmlToMtMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +21,7 @@ import java.nio.charset.StandardCharsets;
 @RequiredArgsConstructor
 public class ConverterController {
 
-    @Autowired
-    private XmlToMtMapper xmlToMtMapper;
+    private final XmlToMtMapper xmlToMtMapper;
 
     @PostMapping(
         consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
