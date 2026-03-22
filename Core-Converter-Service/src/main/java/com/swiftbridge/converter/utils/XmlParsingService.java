@@ -24,13 +24,7 @@ public class XmlParsingService {
     public Document parseNamespaceAwareXml(String xmlContent) throws Exception {
         log.debug("Parsing XML content with namespace awareness");
 
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setNamespaceAware(true);
-
-        factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-        factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
-        factory.setXIncludeAware(false);
-        factory.setExpandEntityReferences(false);
+        DocumentBuilderFactory factory = createSecureFactory();
 
         try {
             Document document = factory.newDocumentBuilder()
@@ -44,6 +38,16 @@ public class XmlParsingService {
             log.error("Failed to parse XML content", ex);
             throw new RuntimeException("XML parsing failed: " + ex.getMessage(), ex);
         }
+    }
+
+    private DocumentBuilderFactory createSecureFactory() throws Exception {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true);
+        factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+        factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+        factory.setXIncludeAware(false);
+        factory.setExpandEntityReferences(false);
+        return factory;
     }
 
     public XPath createPacs008XPath() {
