@@ -1,5 +1,7 @@
 
 spring:
+  profiles:
+    default: local
   application:
     name: core-converter-service
     description: SwiftBridge Core Converter Service
