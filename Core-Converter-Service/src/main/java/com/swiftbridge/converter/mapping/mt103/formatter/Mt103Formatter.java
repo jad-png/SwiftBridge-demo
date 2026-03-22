@@ -31,7 +31,7 @@ public class Mt103Formatter {
                                  String tag71A) {
 
         StringBuilder builder = new StringBuilder();
-        builder.append("{4:\r\n");
+        appendBodyOpening(builder);
         builder.append(":20:").append(tag20).append("\r\n");
         builder.append(":32A:").append(tag32A).append("\r\n");
 
@@ -43,7 +43,7 @@ public class Mt103Formatter {
         appendTag59(builder, tag59Lines);
 
         builder.append(":71A:").append(tag71A).append("\r\n");
-        builder.append("-}");
+        appendBodyClosing(builder);
 
         return builder.toString();
     }
@@ -66,6 +66,14 @@ public class Mt103Formatter {
         if (!value.isBlank()) {
             builder.append(':').append(tagName).append(':').append(value).append("\r\n");
         }
+    }
+
+    private void appendBodyOpening(StringBuilder builder) {
+        builder.append("{4:\r\n");
+    }
+
+    private void appendBodyClosing(StringBuilder builder) {
+        builder.append("-}");
     }
 
     public List<String> buildPartyLines(String name, List<String> addressLines) {
