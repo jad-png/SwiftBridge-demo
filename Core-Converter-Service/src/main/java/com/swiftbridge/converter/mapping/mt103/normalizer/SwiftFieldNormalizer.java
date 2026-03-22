@@ -40,12 +40,16 @@ public class SwiftFieldNormalizer {
             if (normalized.isEmpty()) {
                 return "0,00";
             }
-            BigDecimal amount = new BigDecimal(normalized).stripTrailingZeros();
+            BigDecimal amount = parseAmount(normalized).stripTrailingZeros();
             String plain = amount.toPlainString();
             return plain.replace('.', ',');
         } catch (Exception ex) {
             return "0,00";
         }
+    }
+
+    private BigDecimal parseAmount(String normalizedAmount) {
+        return new BigDecimal(normalizedAmount);
     }
 
     public String normalizeCurrency(String currency) {
