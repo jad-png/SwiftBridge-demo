@@ -24,6 +24,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class SwiftMappingTest {
 
     private static final String TEST_RESOURCE_ROOT = "src/test/resources/";
+    private static final String VALID_FIXTURE = "valid-pacs008.xml";
+    private static final String MISSING_AMOUNT_FIXTURE = "missing-amount.xml";
 
     @Mock
     private SwiftFieldNormalizer normalizer;
@@ -41,7 +43,7 @@ class SwiftMappingTest {
     @DisplayName("Extract valid pacs.008 fields successfully to MT103 format")
     void testExtractValidPacs008Fields() throws Exception {
 
-        Document document = parseFixture("valid-pacs008.xml");
+        Document document = parseFixture(VALID_FIXTURE);
 
         Pacs008Fields fields = fieldExtractor.extract(document);
 
@@ -61,7 +63,7 @@ class SwiftMappingTest {
     @DisplayName("Throw error when amount field is missing from pacs.008")
     void testThrowErrorWhenAmountMissing() throws Exception {
 
-        Document document = parseFixture("missing-amount.xml");
+        Document document = parseFixture(MISSING_AMOUNT_FIXTURE);
 
         SwiftMappingException exception = assertThrows(
             SwiftMappingException.class,
@@ -76,7 +78,7 @@ class SwiftMappingTest {
     @DisplayName("Extract BIC codes for debtor and creditor")
     void testExtractBicCodes() throws Exception {
 
-        Pacs008Fields fields = extractFieldsFromFixture("valid-pacs008.xml");
+        Pacs008Fields fields = extractFieldsFromFixture(VALID_FIXTURE);
 
         assertBic(fields.debtorBic(), "WESTGB2L", "Debtor BIC");
         assertBic(fields.creditorBic(), "CHUSUSNYC", "Creditor BIC");
@@ -86,7 +88,7 @@ class SwiftMappingTest {
     @DisplayName("Extract reference and UETR fields (optional but present)")
     void testExtractOptionalReferenceAndUetr() throws Exception {
 
-        Pacs008Fields fields = extractFieldsFromFixture("valid-pacs008.xml");
+        Pacs008Fields fields = extractFieldsFromFixture(VALID_FIXTURE);
 
         assertNotNull(fields.reference(), "Reference should be extracted");
         assertEquals("12345ABCDE", fields.reference(), "Reference should match pacs.008");
@@ -98,7 +100,7 @@ class SwiftMappingTest {
     @DisplayName("Validate that non-empty fields are correctly populated")
     void testFieldValidationForNonEmptyValues() throws Exception {
 
-        Pacs008Fields fields = extractFieldsFromFixture("valid-pacs008.xml");
+        Pacs008Fields fields = extractFieldsFromFixture(VALID_FIXTURE);
 
         assertMandatoryFieldsNotEmpty(fields);
     }
