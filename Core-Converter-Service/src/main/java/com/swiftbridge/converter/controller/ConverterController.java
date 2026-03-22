@@ -40,11 +40,7 @@ public class ConverterController {
 
         log.info("Successfully generated MT103 for {} in {}ms", file.getOriginalFilename(), processingTimeMs);
 
-        return ResponseEntity.ok(ConversionResponse.builder()
-            .mt103(conversionResult.mt103())
-            .warnings(conversionResult.warnings())
-            .processingTimeMs(processingTimeMs)
-            .build());
+        return ResponseEntity.ok(buildConversionResponse(conversionResult, processingTimeMs));
     }
 
     private String readXmlContent(MultipartFile file) throws IOException {
@@ -53,5 +49,13 @@ public class ConverterController {
 
     private long computeProcessingTimeMs(long startNanos) {
         return Math.max(0L, (System.nanoTime() - startNanos) / 1_000_000L);
+    }
+
+    private ConversionResponse buildConversionResponse(ConversionResult conversionResult, long processingTimeMs) {
+        return ConversionResponse.builder()
+            .mt103(conversionResult.mt103())
+            .warnings(conversionResult.warnings())
+            .processingTimeMs(processingTimeMs)
+            .build();
     }
 }
