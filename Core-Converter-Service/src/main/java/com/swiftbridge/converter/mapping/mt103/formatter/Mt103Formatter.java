@@ -32,10 +32,7 @@ public class Mt103Formatter {
         builder.append(":20:").append(tag20).append("\r\n");
         builder.append(":32A:").append(tag32A).append("\r\n");
 
-        builder.append(":50K:").append("\r\n");
-        for (String line : tag50KLines) {
-            builder.append(trimToLength(line, 35)).append("\r\n");
-        }
+        appendTag50K(builder, tag50KLines);
 
         if (!tag52A.isBlank()) {
             builder.append(":52A:").append(tag52A).append("\r\n");
@@ -45,15 +42,26 @@ public class Mt103Formatter {
             builder.append(":57A:").append(tag57A).append("\r\n");
         }
 
-        builder.append(":59:").append("\r\n");
-        for (String line : tag59Lines) {
-            builder.append(trimToLength(line, 35)).append("\r\n");
-        }
+        appendTag59(builder, tag59Lines);
 
         builder.append(":71A:").append(tag71A).append("\r\n");
         builder.append("-}");
 
         return builder.toString();
+    }
+
+    private void appendTag50K(StringBuilder builder, List<String> tag50KLines) {
+        builder.append(":50K:").append("\r\n");
+        for (String line : tag50KLines) {
+            builder.append(trimToLength(line, 35)).append("\r\n");
+        }
+    }
+
+    private void appendTag59(StringBuilder builder, List<String> tag59Lines) {
+        builder.append(":59:").append("\r\n");
+        for (String line : tag59Lines) {
+            builder.append(trimToLength(line, 35)).append("\r\n");
+        }
     }
 
     public List<String> buildPartyLines(String name, List<String> addressLines) {
