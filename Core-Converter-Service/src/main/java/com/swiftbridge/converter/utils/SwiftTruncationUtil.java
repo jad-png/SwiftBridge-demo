@@ -34,7 +34,7 @@ public class SwiftTruncationUtil {
     }
 
     private List<String> splitByWordBoundary(String value) {
-        String normalized = value.replaceAll("\\s+", " ").trim();
+        String normalized = normalizeWhitespace(value);
         if (normalized.isEmpty()) {
             return Collections.emptyList();
         }
@@ -95,6 +95,10 @@ public class SwiftTruncationUtil {
 
     private String mergeValues(List<String> values) {
         return String.join(" ", values).replaceAll("\\s+", " ").trim();
+    }
+
+    private String normalizeWhitespace(String value) {
+        return value.replaceAll("\\s+", " ").trim();
     }
 
     private boolean isTruncated(String original, List<String> truncatedLines) {
