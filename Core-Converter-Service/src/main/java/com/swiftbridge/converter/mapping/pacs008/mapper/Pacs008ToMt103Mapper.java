@@ -45,9 +45,7 @@ public class Pacs008ToMt103Mapper {
         try {
             log.info("Starting pacs.008 to MT103 conversion");
 
-            Document document = xmlParsingService.parseNamespaceAwareXml(xmlContent);
-
-            Pacs008Fields fields = fieldExtractor.extract(document);
+            Pacs008Fields fields = parseAndExtract(xmlContent);
 
             String mt20 = normalizer.normalizeReference(fields.reference());
             String mt32A = normalizer.normalize32A(
@@ -130,6 +128,11 @@ public class Pacs008ToMt103Mapper {
             return terminal.substring(0, 12);
         }
         return String.format(Locale.ROOT, "%-12s", terminal).replace(' ', 'X');
+    }
+
+    private Pacs008Fields parseAndExtract(String xmlContent) {
+        Document document = xmlParsingService.parseNamespaceAwareXml(xmlContent);
+        return fieldExtractor.extract(document);
     }
 
     private String buildSessionNumber() {
