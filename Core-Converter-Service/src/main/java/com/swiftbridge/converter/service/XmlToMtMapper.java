@@ -18,7 +18,7 @@ public class XmlToMtMapper {
         log.info("XmlToMtMapper: Starting pacs.008 to MT103 conversion");
 
         try {
-            ConversionResult mt103 = swiftCbprMapper.mapPacs008ToMt103(xmlContent);
+            ConversionResult mt103 = mapViaCbprMapper(xmlContent);
             log.info("XmlToMtMapper: MT103 conversion completed successfully");
             return mt103;
 
@@ -30,5 +30,9 @@ public class XmlToMtMapper {
                 e
             );
         }
+    }
+
+    private ConversionResult mapViaCbprMapper(String xmlContent) {
+        return swiftCbprMapper.mapPacs008ToMt103(xmlContent);
     }
 }
