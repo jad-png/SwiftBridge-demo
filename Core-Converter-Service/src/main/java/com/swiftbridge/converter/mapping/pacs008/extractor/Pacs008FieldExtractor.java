@@ -57,20 +57,11 @@ public class Pacs008FieldExtractor {
         validateCreditorName(creditorName);
         validateSettlementDate(settlementDate);
 
-        String debtorBic = firstNonBlank(
-            evaluate(xpath, document, Pacs008Xpaths.DBTR_BICFI),
-            evaluate(xpath, document, Pacs008Xpaths.DBTR_BIC)
-        );
+        String debtorBic = resolveDebtorBic(xpath, document);
 
-        String creditorBic = firstNonBlank(
-            evaluate(xpath, document, Pacs008Xpaths.CDTR_BICFI),
-            evaluate(xpath, document, Pacs008Xpaths.CDTR_BIC)
-        );
+        String creditorBic = resolveCreditorBic(xpath, document);
 
-        String chargeBearer = firstNonBlank(
-            evaluate(xpath, document, Pacs008Xpaths.CHARGE_BEARER_PMTINF),
-            evaluate(xpath, document, Pacs008Xpaths.CHARGE_BEARER_TX)
-        );
+        String chargeBearer = resolveChargeBearer(xpath, document);
 
         List<String> debtorAddress = extractStructuredAddress(xpath, document, Pacs008Xpaths.DEBTOR_ADDRESS_ROOT);
         List<String> creditorAddress = extractStructuredAddress(xpath, document, Pacs008Xpaths.CREDITOR_ADDRESS_ROOT);
@@ -165,6 +156,27 @@ public class Pacs008FieldExtractor {
         } catch (Exception ex) {
             return "";
         }
+    }
+
+    private String resolveDebtorBic(XPath xpath, Document document) {
+        return firstNonBlank(
+            evaluate(xpath, document, Pacs008Xpaths.DBTR_BICFI),
+            evaluate(xpath, document, Pacs008Xpaths.DBTR_BIC)
+        );
+    }
+
+    private String resolveCreditorBic(XPath xpath, Document document) {
+        return firstNonBlank(
+            evaluate(xpath, document, Pacs008Xpaths.CDTR_BICFI),
+            evaluate(xpath, document, Pacs008Xpaths.CDTR_BIC)
+        );
+    }
+
+    private String resolveChargeBearer(XPath xpath, Document document) {
+        return firstNonBlank(
+            evaluate(xpath, document, Pacs008Xpaths.CHARGE_BEARER_PMTINF),
+            evaluate(xpath, document, Pacs008Xpaths.CHARGE_BEARER_TX)
+        );
     }
 
     private List<String> extractStructuredAddress(XPath xpath, Document document, String addressRootExpression) {
