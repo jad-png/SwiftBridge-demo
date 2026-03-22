@@ -41,8 +41,7 @@ class SwiftMappingTest {
     @DisplayName("Extract valid pacs.008 fields successfully to MT103 format")
     void testExtractValidPacs008Fields() throws Exception {
 
-        String xmlContent = readTestResource("valid-pacs008.xml");
-        Document document = xmlParsingService.parseNamespaceAwareXml(xmlContent);
+        Document document = parseFixture("valid-pacs008.xml");
 
         Pacs008Fields fields = fieldExtractor.extract(document);
 
@@ -66,8 +65,7 @@ class SwiftMappingTest {
     @DisplayName("Throw error when amount field is missing from pacs.008")
     void testThrowErrorWhenAmountMissing() throws Exception {
 
-        String xmlContent = readTestResource("missing-amount.xml");
-        Document document = xmlParsingService.parseNamespaceAwareXml(xmlContent);
+        Document document = parseFixture("missing-amount.xml");
 
         SwiftMappingException exception = assertThrows(
             SwiftMappingException.class,
@@ -84,8 +82,7 @@ class SwiftMappingTest {
     @DisplayName("Extract BIC codes for debtor and creditor")
     void testExtractBicCodes() throws Exception {
 
-        String xmlContent = readTestResource("valid-pacs008.xml");
-        Document document = xmlParsingService.parseNamespaceAwareXml(xmlContent);
+        Document document = parseFixture("valid-pacs008.xml");
 
         Pacs008Fields fields = fieldExtractor.extract(document);
 
@@ -99,8 +96,7 @@ class SwiftMappingTest {
     @DisplayName("Extract reference and UETR fields (optional but present)")
     void testExtractOptionalReferenceAndUetr() throws Exception {
 
-        String xmlContent = readTestResource("valid-pacs008.xml");
-        Document document = xmlParsingService.parseNamespaceAwareXml(xmlContent);
+        Document document = parseFixture("valid-pacs008.xml");
 
         Pacs008Fields fields = fieldExtractor.extract(document);
 
@@ -114,8 +110,7 @@ class SwiftMappingTest {
     @DisplayName("Validate that non-empty fields are correctly populated")
     void testFieldValidationForNonEmptyValues() throws Exception {
 
-        String xmlContent = readTestResource("valid-pacs008.xml");
-        Document document = xmlParsingService.parseNamespaceAwareXml(xmlContent);
+        Document document = parseFixture("valid-pacs008.xml");
 
         Pacs008Fields fields = fieldExtractor.extract(document);
 
@@ -129,5 +124,9 @@ class SwiftMappingTest {
     private String readTestResource(String filename) throws Exception {
         String resourcePath = TEST_RESOURCE_ROOT + filename;
         return new String(Files.readAllBytes(Paths.get(resourcePath)), StandardCharsets.UTF_8);
+    }
+
+    private Document parseFixture(String filename) throws Exception {
+        return xmlParsingService.parseNamespaceAwareXml(readTestResource(filename));
     }
 }
