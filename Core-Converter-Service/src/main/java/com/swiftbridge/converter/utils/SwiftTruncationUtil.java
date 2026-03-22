@@ -26,10 +26,10 @@ public class SwiftTruncationUtil {
 
     public TruncationResult truncateNameOrAddress(String fieldName, List<String> values) {
         if (values == null || values.isEmpty()) {
-            return new TruncationResult(Collections.emptyList(), false, "");
+            return emptyResult();
         }
 
-        String merged = String.join(" ", values).replaceAll("\\s+", " ").trim();
+        String merged = mergeValues(values);
         return truncateNameOrAddress(fieldName, merged);
     }
 
@@ -91,6 +91,10 @@ public class SwiftTruncationUtil {
 
     private TruncationResult emptyResult() {
         return new TruncationResult(Collections.emptyList(), false, "");
+    }
+
+    private String mergeValues(List<String> values) {
+        return String.join(" ", values).replaceAll("\\s+", " ").trim();
     }
 
     private boolean isTruncated(String original, List<String> truncatedLines) {
