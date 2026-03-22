@@ -3,6 +3,8 @@ package com.swiftbridge.converter.exception;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+import java.util.Arrays;
+
 @Getter
 public enum SwiftErrorCode {
 
@@ -91,5 +93,15 @@ public enum SwiftErrorCode {
 
         public boolean isServerError() {
                 return this.httpStatus.is5xxServerError();
+        }
+
+        public static SwiftErrorCode fromCode(String code) {
+                if (code == null || code.isBlank()) {
+                        return ERR_INTERNAL_SERVER_ERROR;
+                }
+                return Arrays.stream(values())
+                        .filter(errorCode -> errorCode.code.equalsIgnoreCase(code))
+                        .findFirst()
+                        .orElse(ERR_INTERNAL_SERVER_ERROR);
         }
 }
