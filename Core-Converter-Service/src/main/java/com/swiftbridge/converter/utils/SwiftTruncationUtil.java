@@ -14,14 +14,12 @@ public class SwiftTruncationUtil {
 
     public TruncationResult truncateNameOrAddress(String fieldName, String value) {
         if (value == null || value.isBlank()) {
-            return new TruncationResult(Collections.emptyList(), false, "");
+            return emptyResult();
         }
 
         List<String> lines = splitByWordBoundary(value);
         boolean truncated = isTruncated(value, lines);
-        String warning = truncated
-            ? "Field " + fieldName + " truncated to " + MAX_LINES + "x" + MAX_LINE_LENGTH + " characters"
-            : "";
+        String warning = buildWarning(fieldName, truncated);
 
         return new TruncationResult(lines, truncated, warning);
     }
@@ -82,6 +80,17 @@ public class SwiftTruncationUtil {
             return word;
         }
         return word.substring(0, MAX_LINE_LENGTH);
+    }
+
+    private String buildWarning(String fieldName, boolean truncated) {
+        if (!truncated) {
+            return "";
+        }
+        return "Field " + fieldName + " truncated to " + MAX_LINES + "x" + MAX_LINE_LENGTH + " characters";
+    }
+
+    private TruncationResult emptyResult() {
+        return new TruncationResult(Collections.emptyList(), false, "");
     }
 
     private boolean isTruncated(String original, List<String> truncatedLines) {
