@@ -63,10 +63,7 @@ class ErrorCodeMappingTest {
     void testAllErrorCodesHaveValidFormat() {
 
         for (SwiftErrorCode code : SwiftErrorCode.values()) {
-            assertTrue(code.getCode().startsWith("SB-"),
-                "Error code " + code.name() + " should start with SB-");
-            assertTrue(code.getCode().matches("SB-\\d{4}"),
-                "Error code " + code.getCode() + " should match SB-XXXX format");
+            assertValidErrorCodeFormat(code);
             assertNotNull(code.getMessage(),
                 "Error code " + code.getCode() + " should have a message");
             assertNotNull(code.getHttpStatus(),
@@ -108,5 +105,12 @@ class ErrorCodeMappingTest {
     private void assertCodeAndStatus(SwiftErrorCode errorCode, String expectedCode, HttpStatus expectedStatus) {
         assertEquals(expectedCode, errorCode.getCode());
         assertEquals(expectedStatus, errorCode.getHttpStatus());
+    }
+
+    private void assertValidErrorCodeFormat(SwiftErrorCode code) {
+        assertTrue(code.getCode().startsWith("SB-"),
+            "Error code " + code.name() + " should start with SB-");
+        assertTrue(code.getCode().matches("SB-\\d{4}"),
+            "Error code " + code.getCode() + " should match SB-XXXX format");
     }
 }
