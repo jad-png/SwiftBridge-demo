@@ -17,6 +17,11 @@ import java.time.Instant;
 @Slf4j
 public class GlobalExceptionHandler {
 
+        private static final String CLIENT_ERROR_CODE = "SB-4000";
+        private static final String SERVER_ERROR_CODE = "SB-5000";
+        private static final String CLIENT_ERROR_MESSAGE = "Invalid request. Please check your input and try again.";
+        private static final String SERVER_ERROR_MESSAGE = "An internal error occurred. Please try again later or contact support.";
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponseDTO> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
             HttpServletRequest request) {
@@ -110,7 +115,7 @@ public class GlobalExceptionHandler {
                 ex);
 
         return buildSecureResponse(HttpStatus.BAD_REQUEST, "SB-4000",
-                "Invalid request. Please check your input and try again.");
+                CLIENT_ERROR_MESSAGE);
     }
 
     @ExceptionHandler(Exception.class)
@@ -125,8 +130,8 @@ public class GlobalExceptionHandler {
                 ex.getMessage(),
                 ex);
 
-        return buildSecureResponse(HttpStatus.INTERNAL_SERVER_ERROR, "SB-5000",
-                "An internal error occurred. Please try again later or contact support.");
+        return buildSecureResponse(HttpStatus.INTERNAL_SERVER_ERROR, SERVER_ERROR_CODE,
+                SERVER_ERROR_MESSAGE);
     }
 
     private ResponseEntity<ErrorResponseDTO> buildSecureResponse(HttpStatus status,
