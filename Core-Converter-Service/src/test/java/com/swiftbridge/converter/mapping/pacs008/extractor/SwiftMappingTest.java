@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.w3c.dom.Document;
 
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -21,6 +22,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Pacs008 Field Extraction and Mapping Tests")
 class SwiftMappingTest {
+
+    private static final String TEST_RESOURCE_ROOT = "src/test/resources/";
 
     @Mock
     private SwiftFieldNormalizer normalizer;
@@ -124,7 +127,7 @@ class SwiftMappingTest {
     }
 
     private String readTestResource(String filename) throws Exception {
-        String resourcePath = "src/test/resources/" + filename;
-        return new String(Files.readAllBytes(Paths.get(resourcePath)));
+        String resourcePath = TEST_RESOURCE_ROOT + filename;
+        return new String(Files.readAllBytes(Paths.get(resourcePath)), StandardCharsets.UTF_8);
     }
 }
