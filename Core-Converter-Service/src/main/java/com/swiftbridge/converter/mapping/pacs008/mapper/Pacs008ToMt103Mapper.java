@@ -95,8 +95,12 @@ public class Pacs008ToMt103Mapper {
     }
 
     private Pacs008Fields parseAndExtract(String xmlContent) {
-        Document document = xmlParsingService.parseNamespaceAwareXml(xmlContent);
-        return fieldExtractor.extract(document);
+        try {
+            Document document = xmlParsingService.parseNamespaceAwareXml(xmlContent);
+            return fieldExtractor.extract(document);
+        } catch (Exception ex) {
+            throw new RuntimeException("Unable to parse pacs.008 XML content", ex);
+        }
     }
 
     private String buildSessionNumber() {
