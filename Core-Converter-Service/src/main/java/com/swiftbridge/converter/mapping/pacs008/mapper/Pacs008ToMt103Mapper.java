@@ -61,12 +61,7 @@ public class Pacs008ToMt103Mapper {
 
             BasicHeaderBlock block1 = buildBlock1(mt52A);
 
-            ApplicationHeaderBlock block2 = ApplicationHeaderBlock.builder()
-                .inputOutputId("I")
-                .messageType("103")
-                .receiverLogicalTerminal(toLogicalTerminal(mt57A))
-                .priority("N")
-                .build();
+            ApplicationHeaderBlock block2 = buildBlock2(mt57A);
 
             UserHeaderBlock block3 = UserHeaderBlock.builder()
                 .uetr(resolveUetr(fields.uetr(), fields.reference()))
@@ -172,6 +167,15 @@ public class Pacs008ToMt103Mapper {
             .logicalTerminal(toLogicalTerminal(senderBic))
             .sessionNumber(buildSessionNumber())
             .sequenceNumber(buildSequenceNumber())
+            .build();
+    }
+
+    private ApplicationHeaderBlock buildBlock2(String receiverBic) {
+        return ApplicationHeaderBlock.builder()
+            .inputOutputId("I")
+            .messageType("103")
+            .receiverLogicalTerminal(toLogicalTerminal(receiverBic))
+            .priority("N")
             .build();
     }
 
