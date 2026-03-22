@@ -89,6 +89,7 @@ services:
 
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      SERVER_PORT: 8081
       JAVA_OPTS: "-Xmx256m -Xms128m"
 
     ports:
