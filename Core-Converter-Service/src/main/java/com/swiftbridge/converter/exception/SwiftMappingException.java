@@ -37,4 +37,8 @@ public class SwiftMappingException extends RuntimeException {
     public String getErrorCodeId() {
         return this.errorCode.getCode();
     }
+
+    public SwiftMappingException withContext(String additionalContext) {
+        return new SwiftMappingException(this.errorCode, additionalContext, this);
+    }
 }
