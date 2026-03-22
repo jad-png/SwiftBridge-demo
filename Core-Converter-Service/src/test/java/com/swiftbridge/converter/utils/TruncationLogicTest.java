@@ -11,6 +11,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("SWIFT Name Truncation Logic Tests")
 class TruncationLogicTest {
 
+    private static final int MAX_SWIFT_LINES = 4;
+    private static final int MAX_SWIFT_LINE_LENGTH = 35;
+
     private SwiftTruncationUtil truncationUtil;
 
     @BeforeEach
@@ -33,11 +36,11 @@ class TruncationLogicTest {
         assertFalse(result.warning().isBlank(), "Warning should be present");
 
         List<String> lines = result.lines();
-        assertEquals(4, lines.size(), "Should have exactly 4 lines after truncation");
+        assertEquals(MAX_SWIFT_LINES, lines.size(), "Should have exactly 4 lines after truncation");
 
         for (int i = 0; i < lines.size(); i++) {
             String line = lines.get(i);
-            assertTrue(line.length() <= 35,
+            assertTrue(line.length() <= MAX_SWIFT_LINE_LENGTH,
                 "Line " + (i + 1) + " exceeds 35 characters: " + line.length() + " chars");
         }
     }
@@ -51,10 +54,10 @@ class TruncationLogicTest {
         TruncationResult result = truncationUtil.truncateNameOrAddress("Name", text);
 
         List<String> lines = result.lines();
-        assertTrue(lines.size() <= 4, "Should have at most 4 lines");
+        assertTrue(lines.size() <= MAX_SWIFT_LINES, "Should have at most 4 lines");
 
         for (String line : lines) {
-            assertTrue(line.length() <= 35, "Line '" + line + "' exceeds 35 chars");
+            assertTrue(line.length() <= MAX_SWIFT_LINE_LENGTH, "Line '" + line + "' exceeds 35 chars");
 
             assertFalse(line.endsWith(" "), "Line should not end with space: " + line);
         }
@@ -96,7 +99,7 @@ class TruncationLogicTest {
         TruncationResult result = truncationUtil.truncateNameOrAddress("Name", name36);
 
         assertTrue(result.truncated(), "36-character name should be truncated");
-        assertTrue(result.lines().get(0).length() <= 35, "First line should not exceed 35 chars");
+        assertTrue(result.lines().get(0).length() <= MAX_SWIFT_LINE_LENGTH, "First line should not exceed 35 chars");
     }
 
     @Test
@@ -143,7 +146,7 @@ class TruncationLogicTest {
 
         for (int i = 0; i < lines.size(); i++) {
             String line = lines.get(i);
-            assertTrue(line.length() <= 35, "Line " + (i + 1) + " should have max 35 chars");
+            assertTrue(line.length() <= MAX_SWIFT_LINE_LENGTH, "Line " + (i + 1) + " should have max 35 chars");
         }
     }
 
@@ -159,7 +162,7 @@ class TruncationLogicTest {
         List<String> lines = result.lines();
 
         for (String line : lines) {
-            assertTrue(line.length() <= 35, "Line should not exceed 35 chars");
+            assertTrue(line.length() <= MAX_SWIFT_LINE_LENGTH, "Line should not exceed 35 chars");
         }
     }
 
@@ -192,7 +195,7 @@ class TruncationLogicTest {
 
         List<String> lines = result.lines();
         for (String line : lines) {
-            assertTrue(line.length() <= 35, "Line with accents should fit in 35 chars");
+            assertTrue(line.length() <= MAX_SWIFT_LINE_LENGTH, "Line with accents should fit in 35 chars");
         }
     }
 }
