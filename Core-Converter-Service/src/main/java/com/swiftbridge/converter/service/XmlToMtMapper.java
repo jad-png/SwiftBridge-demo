@@ -24,15 +24,19 @@ public class XmlToMtMapper {
 
         } catch (Exception e) {
             log.error("XmlToMtMapper: Error converting XML to MT103", e);
-            throw new ConversionFailedException(
-                "ERR_MT103_CONVERSION",
-                "Failed to convert pacs.008 to MT103: " + e.getMessage(),
-                e
-            );
+            throw wrapConversionFailure(e);
         }
     }
 
     private ConversionResult mapViaCbprMapper(String xmlContent) {
         return swiftCbprMapper.mapPacs008ToMt103(xmlContent);
+    }
+
+    private ConversionFailedException wrapConversionFailure(Exception exception) {
+        return new ConversionFailedException(
+            "ERR_MT103_CONVERSION",
+            "Failed to convert pacs.008 to MT103: " + exception.getMessage(),
+            exception
+        );
     }
 }
