@@ -16,6 +16,8 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class Mt103Formatter {
 
+    private static final int MT_LINE_LENGTH = 35;
+
     private final SwiftFieldNormalizer normalizer;
     private final SwiftTruncationUtil swiftTruncationUtil;
 
@@ -48,14 +50,14 @@ public class Mt103Formatter {
     private void appendTag50K(StringBuilder builder, List<String> tag50KLines) {
         builder.append(":50K:").append("\r\n");
         for (String line : tag50KLines) {
-            builder.append(trimToLength(line, 35)).append("\r\n");
+            builder.append(trimToLength(line, MT_LINE_LENGTH)).append("\r\n");
         }
     }
 
     private void appendTag59(StringBuilder builder, List<String> tag59Lines) {
         builder.append(":59:").append("\r\n");
         for (String line : tag59Lines) {
-            builder.append(trimToLength(line, 35)).append("\r\n");
+            builder.append(trimToLength(line, MT_LINE_LENGTH)).append("\r\n");
         }
     }
 
