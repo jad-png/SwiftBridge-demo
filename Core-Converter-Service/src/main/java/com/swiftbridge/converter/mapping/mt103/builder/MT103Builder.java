@@ -20,6 +20,12 @@ import java.util.UUID;
 @Component
 public class MT103Builder {
 
+    private static final int TAG20_MAX_LENGTH = 16;
+    private static final int TAG32A_MAX_LENGTH = 24;
+    private static final int PARTY_LINE_MAX_LENGTH = 35;
+    private static final int BIC_LINE_MAX_LENGTH = 12;
+    private static final int CHARGE_BEARER_MAX_LENGTH = 3;
+
     public String build(Mt103Message message) {
         BasicHeaderBlock block1 = message.getBlock1();
         ApplicationHeaderBlock block2 = message.getBlock2();
@@ -70,32 +76,32 @@ public class MT103Builder {
         List<String> tag59Lines = normalizePartyLines(block == null ? null : block.getTag59Lines());
 
         StringBuilder builder = new StringBuilder();
-        builder.append(":20:").append(trimToLength(tag20, 16)).append("\r\n");
-        builder.append(":32A:").append(trimToLength(tag32A, 24)).append("\r\n");
+        builder.append(":20:").append(trimToLength(tag20, TAG20_MAX_LENGTH)).append("\r\n");
+        builder.append(":32A:").append(trimToLength(tag32A, TAG32A_MAX_LENGTH)).append("\r\n");
 
         builder.append(":50K:").append("\r\n");
         for (String line : tag50KLines) {
-            builder.append(trimToLength(line, 35)).append("\r\n");
+            builder.append(trimToLength(line, PARTY_LINE_MAX_LENGTH)).append("\r\n");
         }
 
         String tag52A = oneOf(block == null ? null : block.getTag52A(), "");
         if (!tag52A.isBlank()) {
-            builder.append(":52A:").append(trimToLength(tag52A, 12)).append("\r\n");
+            builder.append(":52A:").append(trimToLength(tag52A, BIC_LINE_MAX_LENGTH)).append("\r\n");
         }
 
         String tag57A = oneOf(block == null ? null : block.getTag57A(), "");
         if (!tag57A.isBlank()) {
-            builder.append(":57A:").append(trimToLength(tag57A, 12)).append("\r\n");
+            builder.append(":57A:").append(trimToLength(tag57A, BIC_LINE_MAX_LENGTH)).append("\r\n");
         }
 
         builder.append(":59:").append("\r\n");
         for (String line : tag59Lines) {
-            builder.append(trimToLength(line, 35)).append("\r\n");
+            builder.append(trimToLength(line, PARTY_LINE_MAX_LENGTH)).append("\r\n");
         }
 
         String tag71A = oneOf(block == null ? null : block.getTag71A(), "");
         if (!tag71A.isBlank()) {
-            builder.append(":71A:").append(trimToLength(tag71A, 3)).append("\r\n");
+            builder.append(":71A:").append(trimToLength(tag71A, CHARGE_BEARER_MAX_LENGTH)).append("\r\n");
         }
 
         return stripTrailingCrlf(builder.toString());
