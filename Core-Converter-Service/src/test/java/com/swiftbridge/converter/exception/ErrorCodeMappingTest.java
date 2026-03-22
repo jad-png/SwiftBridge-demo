@@ -15,8 +15,7 @@ class ErrorCodeMappingTest {
 
         SwiftErrorCode errorCode = SwiftErrorCode.ERR_MAPPING_AMOUNT_MISSING;
 
-        assertEquals("SB-4001", errorCode.getCode());
-        assertEquals(HttpStatus.BAD_REQUEST, errorCode.getHttpStatus());
+        assertCodeAndStatus(errorCode, "SB-4001", HttpStatus.BAD_REQUEST);
         assertTrue(errorCode.getMessage().contains("Amount"));
     }
 
@@ -26,8 +25,7 @@ class ErrorCodeMappingTest {
 
         SwiftErrorCode errorCode = SwiftErrorCode.ERR_INVALID_CURRENCY;
 
-        assertEquals("SB-4002", errorCode.getCode());
-        assertEquals(HttpStatus.BAD_REQUEST, errorCode.getHttpStatus());
+        assertCodeAndStatus(errorCode, "SB-4002", HttpStatus.BAD_REQUEST);
         assertTrue(errorCode.getMessage().contains("Currency"));
     }
 
@@ -37,8 +35,7 @@ class ErrorCodeMappingTest {
 
         SwiftErrorCode errorCode = SwiftErrorCode.ERR_INVALID_XML_STRUCTURE;
 
-        assertEquals("SB-4003", errorCode.getCode());
-        assertEquals(HttpStatus.BAD_REQUEST, errorCode.getHttpStatus());
+        assertCodeAndStatus(errorCode, "SB-4003", HttpStatus.BAD_REQUEST);
         assertTrue(errorCode.getMessage().contains("XML"));
     }
 
@@ -48,8 +45,7 @@ class ErrorCodeMappingTest {
 
         SwiftErrorCode errorCode = SwiftErrorCode.ERR_INTERNAL_SERVER_ERROR;
 
-        assertEquals("SB-5000", errorCode.getCode());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, errorCode.getHttpStatus());
+        assertCodeAndStatus(errorCode, "SB-5000", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @Test
@@ -58,8 +54,7 @@ class ErrorCodeMappingTest {
 
         SwiftErrorCode errorCode = SwiftErrorCode.ERR_CORE_SERVICE_UNAVAILABLE;
 
-        assertEquals("SB-5001", errorCode.getCode());
-        assertEquals(HttpStatus.SERVICE_UNAVAILABLE, errorCode.getHttpStatus());
+        assertCodeAndStatus(errorCode, "SB-5001", HttpStatus.SERVICE_UNAVAILABLE);
         assertTrue(errorCode.getMessage().contains("Core"));
     }
 
@@ -108,5 +103,10 @@ class ErrorCodeMappingTest {
 
         assertEquals(errorCode, exception.getErrorCode());
         assertTrue(exception.getMessage().contains(context));
+    }
+
+    private void assertCodeAndStatus(SwiftErrorCode errorCode, String expectedCode, HttpStatus expectedStatus) {
+        assertEquals(expectedCode, errorCode.getCode());
+        assertEquals(expectedStatus, errorCode.getHttpStatus());
     }
 }
