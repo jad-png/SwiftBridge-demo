@@ -70,6 +70,15 @@ public class Mt103Formatter {
     }
 
     public TruncationResult buildPartyLinesWithWarning(String fieldTag, String name, List<String> addressLines) {
+        List<String> sourceParts = collectPartySourceParts(name, addressLines);
+
+        String merged = String.join(" ", sourceParts).trim();
+            String normalizedFieldTag = normalizer.normalizeText(fieldTag);
+            String warningField = normalizedFieldTag.isEmpty() ? "field" : normalizedFieldTag;
+            return swiftTruncationUtil.truncateNameOrAddress(warningField, merged);
+    }
+
+    private List<String> collectPartySourceParts(String name, List<String> addressLines) {
         List<String> sourceParts = new ArrayList<>();
         if (name != null && !normalizer.normalizeText(name).isEmpty()) {
             sourceParts.add(normalizer.normalizeText(name));
@@ -81,11 +90,7 @@ public class Mt103Formatter {
                 .filter(value -> !value.isEmpty())
                 .forEach(sourceParts::add);
         }
-
-        String merged = String.join(" ", sourceParts).trim();
-            String normalizedFieldTag = normalizer.normalizeText(fieldTag);
-            String warningField = normalizedFieldTag.isEmpty() ? "field" : normalizedFieldTag;
-            return swiftTruncationUtil.truncateNameOrAddress(warningField, merged);
+            return sourceParts;
     }
 
     public List<String> smartTruncateToMtLines(String text, int maxLines, int lineLength) {
