@@ -119,6 +119,7 @@ services:
 
 networks:
   swiftbridge_network:
+    name: swiftbridge_network
     driver: bridge
     ipam:
       config:
