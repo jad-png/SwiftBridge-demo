@@ -126,4 +126,5 @@ networks:
         - subnet: 172.20.0.0/16
 volumes:
   postgres_data:
+    name: swiftbridge_postgres_data
     driver: local
