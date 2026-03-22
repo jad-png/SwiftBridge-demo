@@ -65,17 +65,8 @@ public class Pacs008ToMt103Mapper {
 
             UserHeaderBlock block3 = buildBlock3(fields);
 
-            TextBlock block4 = TextBlock.builder()
-                .tag20(mt20)
-                .tag32A(mt32A)
-                .tag50KLines(mt50k)
-                .tag52A(mt52A)
-                .tag57A(mt57A)
-                .tag59Lines(mt59)
-                .tag71A(mt71A)
-                .build();
-
-            TrailerBlock block5 = TrailerBlock.builder().build();
+            TextBlock block4 = buildBlock4(mt20, mt32A, mt50k, mt52A, mt57A, mt59, mt71A);
+            TrailerBlock block5 = buildBlock5();
 
             Mt103Message mt103Message = Mt103Message.builder()
                 .block1(block1)
@@ -181,6 +172,22 @@ public class Pacs008ToMt103Mapper {
         return UserHeaderBlock.builder()
             .uetr(resolveUetr(fields.uetr(), fields.reference()))
             .build();
+    }
+
+    private TextBlock buildBlock4(String mt20, String mt32A, List<String> mt50k, String mt52A, String mt57A, List<String> mt59, String mt71A) {
+        return TextBlock.builder()
+            .tag20(mt20)
+            .tag32A(mt32A)
+            .tag50KLines(mt50k)
+            .tag52A(mt52A)
+            .tag57A(mt57A)
+            .tag59Lines(mt59)
+            .tag71A(mt71A)
+            .build();
+    }
+
+    private TrailerBlock buildBlock5() {
+        return TrailerBlock.builder().build();
     }
 
     private String resolveUetr(String uetr, String fallbackReference) {
