@@ -187,13 +187,7 @@ public class Pacs008FieldExtractor {
                 return parts;
             }
 
-            NodeList adrLines = (NodeList) xpath.evaluate("doc:AdrLine", addressRoot, XPathConstants.NODESET);
-            for (int index = 0; index < adrLines.getLength(); index++) {
-                String line = normalizer.normalizeText(adrLines.item(index).getTextContent());
-                if (!line.isEmpty()) {
-                    parts.add(line);
-                }
-            }
+            parts.addAll(extractAdrLines(xpath, addressRoot));
 
             if (!parts.isEmpty()) {
                 return deduplicate(parts);
@@ -222,6 +216,18 @@ public class Pacs008FieldExtractor {
         } catch (Exception ex) {
             return parts;
         }
+    }
+
+    private List<String> extractAdrLines(XPath xpath, Node addressRoot) throws Exception {
+        List<String> parts = new ArrayList<>();
+        NodeList adrLines = (NodeList) xpath.evaluate("doc:AdrLine", addressRoot, XPathConstants.NODESET);
+        for (int index = 0; index < adrLines.getLength(); index++) {
+            String line = normalizer.normalizeText(adrLines.item(index).getTextContent());
+            if (!line.isEmpty()) {
+                parts.add(line);
+            }
+        }
+        return parts;
     }
 
     private List<String> deduplicate(List<String> values) {
