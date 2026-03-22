@@ -55,9 +55,9 @@ public class Pacs008ToMt103Mapper {
             List<String> mt50k = mt50kResult.lines();
             List<String> mt59 = mt59Result.lines();
 
-            String mt52A = normalizer.normalizeBic(fields.debtorBic());
-            String mt57A = normalizer.normalizeBic(fields.creditorBic());
-            String mt71A = normalizer.mapChargeBearer(fields.chargeBearer());
+            String mt52A = mapDebtorBic(fields);
+            String mt57A = mapCreditorBic(fields);
+            String mt71A = mapChargeBearer(fields);
 
             BasicHeaderBlock block1 = BasicHeaderBlock.builder()
                 .applicationId("F")
@@ -157,6 +157,18 @@ public class Pacs008ToMt103Mapper {
 
     private TruncationResult mapCreditorPartyLines(Pacs008Fields fields) {
         return formatter.buildPartyLinesWithWarning(":59:", fields.creditorName(), fields.creditorAddress());
+    }
+
+    private String mapDebtorBic(Pacs008Fields fields) {
+        return normalizer.normalizeBic(fields.debtorBic());
+    }
+
+    private String mapCreditorBic(Pacs008Fields fields) {
+        return normalizer.normalizeBic(fields.creditorBic());
+    }
+
+    private String mapChargeBearer(Pacs008Fields fields) {
+        return normalizer.mapChargeBearer(fields.chargeBearer());
     }
 
     private String resolveUetr(String uetr, String fallbackReference) {
