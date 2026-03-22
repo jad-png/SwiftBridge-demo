@@ -29,6 +29,21 @@ public class Pacs008Xpaths {
     public static final String DEBTOR_ADDRESS_ROOT = "//doc:CdtTrfTxInf/doc:Dbtr/doc:PstlAdr";
     public static final String CREDITOR_ADDRESS_ROOT = "//doc:CdtTrfTxInf/doc:Cdtr/doc:PstlAdr";
 
+    public static final String[] AMOUNT_VALUE_PATHS = {
+        AMOUNT_VALUE_INSTD,
+        AMOUNT_VALUE_INTERBANK
+    };
+
+    public static final String[] AMOUNT_CURRENCY_PATHS = {
+        AMOUNT_CCY_INSTD,
+        AMOUNT_CCY_INTERBANK
+    };
+
+    public static final String[] CHARGE_BEARER_PATHS = {
+        CHARGE_BEARER_PMTINF,
+        CHARGE_BEARER_TX
+    };
+
     private Pacs008Xpaths() {
         throw new AssertionError("Utility class should not be instantiated");
     }
