@@ -16,4 +16,8 @@ public class ConversionFailedException extends RuntimeException {
         super(message, cause);
         this.errorCode = errorCode;
     }
+
+    public ConversionFailedException(SwiftErrorCode errorCode, String message, Throwable cause) {
+        this(errorCode.getCode(), message, cause);
+    }
 }
