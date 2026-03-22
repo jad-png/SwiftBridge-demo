@@ -17,6 +17,7 @@ import java.util.Objects;
 public class Mt103Formatter {
 
     private static final int MT_LINE_LENGTH = 35;
+    private static final String DEFAULT_PARTY_PLACEHOLDER = "NOTPROVIDED";
 
     private final SwiftFieldNormalizer normalizer;
     private final SwiftTruncationUtil swiftTruncationUtil;
@@ -101,7 +102,7 @@ public class Mt103Formatter {
 
     public List<String> smartTruncateToMtLines(String text, int maxLines, int lineLength) {
         if (text == null || normalizer.normalizeText(text).isEmpty()) {
-            return Collections.singletonList("NOTPROVIDED");
+            return defaultPlaceholderLine();
         }
 
         String normalized = normalizer.normalizeText(text);
@@ -142,6 +143,10 @@ public class Mt103Formatter {
             return new ArrayList<>(lines.subList(0, maxLines));
         }
         return lines;
+    }
+
+    private List<String> defaultPlaceholderLine() {
+        return Collections.singletonList(DEFAULT_PARTY_PLACEHOLDER);
     }
 
     private boolean shouldSkipWord(String word) {
