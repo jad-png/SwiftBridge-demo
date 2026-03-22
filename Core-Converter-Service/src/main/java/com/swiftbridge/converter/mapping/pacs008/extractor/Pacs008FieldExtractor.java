@@ -193,29 +193,35 @@ public class Pacs008FieldExtractor {
                 return deduplicate(parts);
             }
 
-            String street = evaluate(xpath, document, addressRootExpression + "/doc:StrtNm");
-            String building = evaluate(xpath, document, addressRootExpression + "/doc:BldgNb");
-            String postal = evaluate(xpath, document, addressRootExpression + "/doc:PstCd");
-            String town = evaluate(xpath, document, addressRootExpression + "/doc:TwnNm");
-            String country = evaluate(xpath, document, addressRootExpression + "/doc:Ctry");
-
-            String streetLine = normalizer.normalizeText((street + " " + building).trim());
-            String townLine = normalizer.normalizeText((postal + " " + town).trim());
-
-            if (!streetLine.isEmpty()) {
-                parts.add(streetLine);
-            }
-            if (!townLine.isEmpty()) {
-                parts.add(townLine);
-            }
-            if (!country.isEmpty()) {
-                parts.add(normalizer.normalizeText(country));
-            }
+            parts.addAll(extractFallbackAddressParts(xpath, document, addressRootExpression));
 
             return deduplicate(parts);
         } catch (Exception ex) {
             return parts;
         }
+    }
+
+    private List<String> extractFallbackAddressParts(XPath xpath, Document document, String addressRootExpression) {
+        List<String> parts = new ArrayList<>();
+        String street = evaluate(xpath, document, addressRootExpression + "/doc:StrtNm");
+        String building = evaluate(xpath, document, addressRootExpression + "/doc:BldgNb");
+        String postal = evaluate(xpath, document, addressRootExpression + "/doc:PstCd");
+        String town = evaluate(xpath, document, addressRootExpression + "/doc:TwnNm");
+        String country = evaluate(xpath, document, addressRootExpression + "/doc:Ctry");
+
+        String streetLine = normalizer.normalizeText((street + " " + building).trim());
+        String townLine = normalizer.normalizeText((postal + " " + town).trim());
+
+        if (!streetLine.isEmpty()) {
+            parts.add(streetLine);
+        }
+        if (!townLine.isEmpty()) {
+            parts.add(townLine);
+        }
+        if (!country.isEmpty()) {
+            parts.add(normalizer.normalizeText(country));
+        }
+        return parts;
     }
 
     private List<String> extractAdrLines(XPath xpath, Node addressRoot) throws Exception {
