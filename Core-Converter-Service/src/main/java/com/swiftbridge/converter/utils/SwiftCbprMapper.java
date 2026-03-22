@@ -20,8 +20,7 @@ public class SwiftCbprMapper {
 
             ConversionResult conversionResult = pacs008ToMt103Mapper.mapPacs008ToMt103(xmlContent);
 
-            log.info("SwiftCbprMapper: CBPR+ to MT103 conversion completed successfully. " +
-                     "Generated MT103 message length: {} characters", conversionResult.mt103().length());
+            logConversionSuccess(conversionResult);
 
             return conversionResult;
 
@@ -29,5 +28,10 @@ public class SwiftCbprMapper {
             log.error("SwiftCbprMapper: CBPR+ to MT103 conversion failed", e);
             throw new RuntimeException("Failed to map CBPR+ XML to MT103: " + e.getMessage(), e);
         }
+    }
+
+    private void logConversionSuccess(ConversionResult conversionResult) {
+        log.info("SwiftCbprMapper: CBPR+ to MT103 conversion completed successfully. " +
+                 "Generated MT103 message length: {} characters", conversionResult.mt103().length());
     }
 }
