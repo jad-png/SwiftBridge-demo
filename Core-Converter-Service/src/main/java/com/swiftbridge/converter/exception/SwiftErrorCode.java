@@ -84,4 +84,12 @@ public enum SwiftErrorCode {
     public int getHttpStatusCode() {
         return this.httpStatus.value();
     }
+
+        public boolean isClientError() {
+                return this.httpStatus.is4xxClientError();
+        }
+
+        public boolean isServerError() {
+                return this.httpStatus.is5xxServerError();
+        }
 }
