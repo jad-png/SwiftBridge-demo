@@ -10,6 +10,10 @@ public class CorrelationIdUtil {
     public static final String CORRELATION_ID_HEADER = "X-Correlation-ID";
     public static final String MDC_CORRELATION_ID = "correlationId";
 
+    private CorrelationIdUtil() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static String extractOrGenerateCorrelationId(HttpServletRequest request) {
         String correlationId = normalizeCorrelationId(request.getHeader(CORRELATION_ID_HEADER));
 
