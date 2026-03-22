@@ -50,19 +50,8 @@ public class Pacs008FieldExtractor {
 
         String creditorName = scalarFields.creditorName();
 
-        if (amountValue.isEmpty()) {
-            throw new SwiftMappingException(
-                SwiftErrorCode.ERR_MAPPING_AMOUNT_MISSING,
-                "InstdAmt or IntrBkSttlmAmt not found in pacs.008 document"
-            );
-        }
-
-        if (amountCurrency.isEmpty()) {
-            throw new SwiftMappingException(
-                SwiftErrorCode.ERR_INVALID_CURRENCY,
-                "Currency (@Ccy attribute) not found in amount field"
-            );
-        }
+        validateAmountPresence(amountValue);
+        validateAmountCurrency(amountCurrency);
 
         if (debtorName.isEmpty()) {
             throw new SwiftMappingException(
@@ -134,6 +123,26 @@ public class Pacs008FieldExtractor {
         XPath xpath = XPathFactory.newInstance().newXPath();
         xpath.setNamespaceContext(new Pacs008NamespaceContext());
         return xpath;
+    }
+
+    private void validateAmountPresence(String amountValue) {
+        if (!amountValue.isEmpty()) {
+            return;
+        }
+        throw new SwiftMappingException(
+            SwiftErrorCode.ERR_MAPPING_AMOUNT_MISSING,
+            "InstdAmt or IntrBkSttlmAmt not found in pacs.008 document"
+        );
+    }
+
+    private void validateAmountCurrency(String amountCurrency) {
+        if (!amountCurrency.isEmpty()) {
+            return;
+        }
+        throw new SwiftMappingException(
+            SwiftErrorCode.ERR_INVALID_CURRENCY,
+            "Currency (@Ccy attribute) not found in amount field"
+        );
     }
 
     private String evaluate(XPath xpath, Document document, String expression) {
