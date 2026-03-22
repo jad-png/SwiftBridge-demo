@@ -44,19 +44,12 @@ public class Pacs008XPathParserService {
             TruncationResult debtorAddressTruncation = truncatePartyAddress(xpath, document, "Debtor Address", Pacs008Xpaths.DEBTOR_ADDRESS_ROOT);
             TruncationResult creditorAddressTruncation = truncatePartyAddress(xpath, document, "Creditor Address", Pacs008Xpaths.CREDITOR_ADDRESS_ROOT);
 
-            List<String> warnings = new ArrayList<>();
-            if (debtorNameTruncation.truncated()) {
-                warnings.add(debtorNameTruncation.warning());
-            }
-            if (creditorNameTruncation.truncated()) {
-                warnings.add(creditorNameTruncation.warning());
-            }
-            if (debtorAddressTruncation.truncated()) {
-                warnings.add(debtorAddressTruncation.warning());
-            }
-            if (creditorAddressTruncation.truncated()) {
-                warnings.add(creditorAddressTruncation.warning());
-            }
+            List<String> warnings = collectWarnings(
+                debtorNameTruncation,
+                creditorNameTruncation,
+                debtorAddressTruncation,
+                creditorAddressTruncation
+            );
 
             return new Pacs008XPathExtractionResult(
                 debtorName,
@@ -80,6 +73,16 @@ public class Pacs008XPathParserService {
 
     private TruncationResult truncatePartyAddress(XPath xpath, Document document, String label, String addressRootExpression) {
         return swiftTruncationUtil.truncateNameOrAddress(label, extractAddressLines(xpath, document, addressRootExpression));
+    }
+
+    private List<String> collectWarnings(TruncationResult... results) {
+        List<String> warnings = new ArrayList<>();
+        for (TruncationResult result : results) {
+            if (result.truncated()) {
+                warnings.add(result.warning());
+            }
+        }
+        return warnings;
     }
 
     private List<String> extractAddressLines(XPath xpath, Document document, String addressRootExpression) {
