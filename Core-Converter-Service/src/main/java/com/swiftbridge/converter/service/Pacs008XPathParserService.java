@@ -39,16 +39,10 @@ public class Pacs008XPathParserService {
             String interbankSettlementDate = evaluate(xpath, document, Pacs008Xpaths.SETTLEMENT_DATE_INTERBANK);
             String instructionId = evaluate(xpath, document, Pacs008Xpaths.REFERENCE_INSTR_ID);
 
-            TruncationResult debtorNameTruncation = swiftTruncationUtil.truncateNameOrAddress("Debtor Name", debtorName);
-            TruncationResult creditorNameTruncation = swiftTruncationUtil.truncateNameOrAddress("Creditor Name", creditorName);
-            TruncationResult debtorAddressTruncation = swiftTruncationUtil.truncateNameOrAddress(
-                "Debtor Address",
-                extractAddressLines(xpath, document, Pacs008Xpaths.DEBTOR_ADDRESS_ROOT)
-            );
-            TruncationResult creditorAddressTruncation = swiftTruncationUtil.truncateNameOrAddress(
-                "Creditor Address",
-                extractAddressLines(xpath, document, Pacs008Xpaths.CREDITOR_ADDRESS_ROOT)
-            );
+            TruncationResult debtorNameTruncation = truncatePartyName("Debtor Name", debtorName);
+            TruncationResult creditorNameTruncation = truncatePartyName("Creditor Name", creditorName);
+            TruncationResult debtorAddressTruncation = truncatePartyAddress(xpath, document, "Debtor Address", Pacs008Xpaths.DEBTOR_ADDRESS_ROOT);
+            TruncationResult creditorAddressTruncation = truncatePartyAddress(xpath, document, "Creditor Address", Pacs008Xpaths.CREDITOR_ADDRESS_ROOT);
 
             List<String> warnings = new ArrayList<>();
             if (debtorNameTruncation.truncated()) {
@@ -78,6 +72,14 @@ public class Pacs008XPathParserService {
         } catch (Exception ex) {
             throw new RuntimeException("Failed to parse pacs.008 fields via XPath", ex);
         }
+    }
+
+    private TruncationResult truncatePartyName(String label, String value) {
+        return swiftTruncationUtil.truncateNameOrAddress(label, value);
+    }
+
+    private TruncationResult truncatePartyAddress(XPath xpath, Document document, String label, String addressRootExpression) {
+        return swiftTruncationUtil.truncateNameOrAddress(label, extractAddressLines(xpath, document, addressRootExpression));
     }
 
     private List<String> extractAddressLines(XPath xpath, Document document, String addressRootExpression) {
