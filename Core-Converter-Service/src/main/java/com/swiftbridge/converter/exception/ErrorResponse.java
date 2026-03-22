@@ -13,4 +13,15 @@ public class ErrorResponse {
     private String errorCode;
     private String message;
     private String path;
+
+    public static ErrorResponse of(String timestamp, int status, String error, String errorCode, String message, String path) {
+        return ErrorResponse.builder()
+            .timestamp(timestamp)
+            .status(status)
+            .error(error)
+            .errorCode(errorCode)
+            .message(message)
+            .path(path)
+            .build();
+    }
 }
