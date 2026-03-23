@@ -4,14 +4,14 @@ spring:
     description: SwiftBridge Orchestrator Service
 
   datasource:
-    url: jdbc:postgresql://swiftbridge_postgres:5432/swiftbridge
-    username: swiftbridge_user
-    password: SwiftBridge@123!Secure
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://swiftbridge_postgres:5432/swiftbridge}
+    username: ${SPRING_DATASOURCE_USERNAME:swiftbridge_user}
+    password: ${SPRING_DATASOURCE_PASSWORD:SwiftBridge@123!Secure}
     driver-class-name: org.postgresql.Driver
     hikari:
-      maximum-pool-size: 10
-      minimum-idle: 5
-      connection-timeout: 30000
+      maximum-pool-size: ${DB_POOL_SIZE:10}
+      minimum-idle: ${DB_MIN_IDLE:5}
+      connection-timeout: ${DB_CONNECTION_TIMEOUT:30000}
       idle-timeout: 600000
       max-lifetime: 1800000
 
@@ -40,11 +40,11 @@ spring:
       fail-on-unknown-properties: false
 
 server:
-  port: 8080
+  port: ${SERVER_PORT:8080}
   tomcat:
     threads:
-      max: 200
-      min-spare: 10
+      max: ${ORCHESTRATOR_MAX_THREADS:200}
+      min-spare: ${ORCHESTRATOR_MIN_SPARE_THREADS:10}
     connection-timeout: 20000
 
 logging:
@@ -69,24 +69,24 @@ management:
 
 app:
   core-converter:
-    url: http://core-converter-service:8081
-    connect-timeout: 5000
-    read-timeout: 10000
+    url: ${APP_CORE_CONVERTER_URL:${CORE_CONVERTER_URL:http://core-converter-service:8081}}
+    connect-timeout: ${CONNECT_TIMEOUT:5000}
+    read-timeout: ${READ_TIMEOUT:10000}
 
   security:
     jwt:
-      enabled: true
+      enabled: ${JWT_ENABLED:true}
       secret: ${JWT_SECRET:VGhpcy1pcy1hLXZlcnktc2VjdXJlLXNlY3JldC1rZXktMTIzNDU2Nzg5MA}
-      expiration: 86400000
+      expiration: ${JWT_EXPIRATION:86400000}
 
   jwt:
-    issuer: swiftbridge
-    cookie-name: jwt-token
+    issuer: ${JWT_ISSUER:swiftbridge}
+    cookie-name: ${JWT_COOKIE_NAME:jwt-token}
 
   transaction:
     max-retry-attempts: 3
     retry-delay-ms: 1000
 converter:
   service:
-    url: http://core-converter-service:8081
-    endpoint: /api/v1/internal/convert
+    url: ${CONVERTER_SERVICE_URL:${CORE_CONVERTER_URL:http://core-converter-service:8081}}
+    endpoint: ${CONVERTER_SERVICE_ENDPOINT:/api/v1/internal/convert}

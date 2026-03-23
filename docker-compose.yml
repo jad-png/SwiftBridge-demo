@@ -1,18 +1,18 @@
 services:
 
   postgres-db:
-    image: postgres:16-alpine
+    image: ${POSTGRES_IMAGE}
     container_name: swiftbridge_postgres
 
     environment:
-      POSTGRES_DB: swiftbridge
-      POSTGRES_USER: swiftbridge_user
-      POSTGRES_PASSWORD: SwiftBridge@123!Secure
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
       POSTGRES_HOST_AUTH_METHOD: scram-sha-256
 
     ports:
-      - "5432:5432"
+      - "${DB_PORT}:5432"
 
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -21,7 +21,7 @@ services:
       - swiftbridge_network
 
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U swiftbridge_user"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -39,19 +39,23 @@ services:
     container_name: swiftbridge_orchestrator
 
     environment:
-      SPRING_PROFILES_ACTIVE: docker
-      SERVER_PORT: 8080
-      JAVA_OPTS: "-Xmx512m -Xms256m"
-
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/swiftbridge
-      SPRING_DATASOURCE_USERNAME: swiftbridge_user
-      SPRING_DATASOURCE_PASSWORD: SwiftBridge@123!Secure
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-
-      APP_CORE_CONVERTER_URL: http://core-converter-service:8081
+      SPRING_PROFILES_ACTIVE: ${ORCHESTRATOR_PROFILE}
+      SERVER_PORT: ${ORCHESTRATOR_PORT}
+      JAVA_OPTS: ${ORCHESTRATOR_JAVA_OPTS}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+      SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: ${JPA_HIBERNATE_DDL_AUTO}
+      APP_SECURITY_JWT_SECRET: ${JWT_SECRET}
+      APP_SECURITY_JWT_EXPIRATION: ${JWT_EXPIRATION}
+      APP_JWT_ISSUER: ${JWT_ISSUER}
+      APP_JWT_COOKIE_NAME: ${JWT_COOKIE_NAME}
+      APP_CORE_CONVERTER_URL: ${CORE_CONVERTER_URL}
+      CONVERTER_SERVICE_URL: ${CORE_CONVERTER_URL}
+      CONVERTER_SERVICE_ENDPOINT: ${CONVERTER_ENDPOINT}
 
     ports:
-      - "8080:8080"
+      - "${ORCHESTRATOR_PORT}:${ORCHESTRATOR_PORT}"
 
     networks:
       - swiftbridge_network
@@ -88,12 +92,16 @@ services:
     container_name: swiftbridge_converter
 
     environment:
-      SPRING_PROFILES_ACTIVE: docker
-      SERVER_PORT: 8081
-      JAVA_OPTS: "-Xmx256m -Xms128m"
+      SPRING_PROFILES_ACTIVE: ${CONVERTER_PROFILE}
+      SERVER_PORT: ${CONVERTER_PORT}
+      JAVA_OPTS: ${CONVERTER_JAVA_OPTS}
+      APP_SECURITY_INTERNAL_API_KEY: ${INTERNAL_API_KEY}
+      APP_CONVERTER_BATCH_ENABLED: ${CONVERTER_BATCH_ENABLED}
+      APP_CONVERTER_BATCH_SIZE: ${CONVERTER_BATCH_SIZE}
+      APP_CONVERTER_VALIDATION_MODE: ${CONVERTER_VALIDATION_MODE}
 
     ports:
-      - "8081:8081"
+      - "${CONVERTER_PORT}:${CONVERTER_PORT}"
 
     networks:
       - swiftbridge_network
@@ -121,12 +129,12 @@ services:
 
 networks:
   swiftbridge_network:
-    name: swiftbridge_network
+    name: ${DOCKER_NETWORK}
     driver: bridge
     ipam:
       config:
-        - subnet: 172.20.0.0/16
+        - subnet: ${DOCKER_NETWORK_SUBNET}
 volumes:
   postgres_data:
-    name: swiftbridge_postgres_data
+    name: ${POSTGRES_VOLUME}
     driver: local

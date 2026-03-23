@@ -18,16 +18,16 @@ spring:
       fail-on-unknown-properties: false
 
 server:
-  port: 8081
+  port: ${SERVER_PORT:8081}
   servlet:
     context-path: /api/v1
   tomcat:
     threads:
-      max: 250
-      min-spare: 20
+      max: ${CONVERTER_MAX_THREADS:250}
+      min-spare: ${CONVERTER_MIN_SPARE_THREADS:20}
     connection-timeout: 20000
 
-    accept-count: 100
+    accept-count: ${CONVERTER_QUEUE_CAPACITY:100}
 
 logging:
   level:
@@ -54,11 +54,11 @@ app:
     field-mapping:
       enabled: true
 
-    validation-mode: strict
+    validation-mode: ${CONVERTER_VALIDATION_MODE:strict}
 
     batch:
-      enabled: true
-      size: 50
+      enabled: ${CONVERTER_BATCH_ENABLED:true}
+      size: ${CONVERTER_BATCH_SIZE:50}
 
   security:
-    internal-api-key: CHANGE_ME_IN_PRODUCTION
+    internal-api-key: ${APP_SECURITY_INTERNAL_API_KEY:${INTERNAL_API_KEY:CHANGE_ME_IN_PRODUCTION}}
