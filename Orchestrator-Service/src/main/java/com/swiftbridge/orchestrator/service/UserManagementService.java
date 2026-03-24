@@ -1,7 +1,7 @@
 package com.swiftbridge.orchestrator.service;
 
-import com.swiftbridge.orchestrator.dto.UserResponseDTO;
-import com.swiftbridge.orchestrator.dto.UserUpdateDTO;
+import com.swiftbridge.orchestrator.dto.auth.UserResponseDTO;
+import com.swiftbridge.orchestrator.dto.auth.UserUpdateDTO;
 import com.swiftbridge.orchestrator.entity.AppUser;
 import com.swiftbridge.orchestrator.exception.UnauthorizedException;
 import com.swiftbridge.orchestrator.repository.AppUserRepository;

@@ -1,8 +1,8 @@
 package com.swiftbridge.orchestrator.service;
 
-import com.swiftbridge.orchestrator.dto.ActivityTrendItem;
-import com.swiftbridge.orchestrator.dto.RecentActivityItem;
-import com.swiftbridge.orchestrator.dto.UserStatsResponse;
+import com.swiftbridge.orchestrator.dto.stats.ActivityTrendItem;
+import com.swiftbridge.orchestrator.dto.stats.RecentActivityItem;
+import com.swiftbridge.orchestrator.dto.stats.UserStatsResponse;
 import com.swiftbridge.orchestrator.entity.ConversionStatus;
 import com.swiftbridge.orchestrator.repository.TransactionHistoryRepository;
 import com.swiftbridge.orchestrator.repository.projection.DailyConversionStatsProjection;

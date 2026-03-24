@@ -1,4 +1,4 @@
-package com.swiftbridge.orchestrator.dto;
+package com.swiftbridge.orchestrator.dto.history;
 
 import lombok.Builder;
 import lombok.Getter;

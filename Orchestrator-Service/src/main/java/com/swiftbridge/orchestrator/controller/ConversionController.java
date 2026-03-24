@@ -1,6 +1,6 @@
 package com.swiftbridge.orchestrator.controller;
 
-import com.swiftbridge.orchestrator.dto.ConversionResponse;
+import com.swiftbridge.orchestrator.dto.conversion.ConversionResponse;
 import com.swiftbridge.orchestrator.exception.ValidationFailedException;
 import com.swiftbridge.orchestrator.service.ConversionService;
 import lombok.RequiredArgsConstructor;

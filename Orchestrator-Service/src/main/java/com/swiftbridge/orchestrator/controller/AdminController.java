@@ -1,6 +1,6 @@
 package com.swiftbridge.orchestrator.controller;
 
-import com.swiftbridge.orchestrator.dto.AdminStatsResponse;
+import com.swiftbridge.orchestrator.dto.stats.AdminStatsResponse;
 import com.swiftbridge.orchestrator.service.AdminStatsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

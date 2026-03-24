@@ -1,6 +1,6 @@
 package com.swiftbridge.orchestrator.service.Impl;
 
-import com.swiftbridge.orchestrator.dto.ConversionResponse;
+import com.swiftbridge.orchestrator.dto.conversion.ConversionResponse;
 import com.swiftbridge.orchestrator.exception.ConversionFailedException;
 import com.swiftbridge.orchestrator.service.ConversionService;
 import com.swiftbridge.orchestrator.service.ConversionValidator;

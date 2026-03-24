@@ -1,4 +1,4 @@
-package com.swiftbridge.orchestrator.dto;
+package com.swiftbridge.orchestrator.dto.error;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

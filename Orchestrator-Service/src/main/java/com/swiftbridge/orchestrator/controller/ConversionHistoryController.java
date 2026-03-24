@@ -1,7 +1,7 @@
 package com.swiftbridge.orchestrator.controller;
 
-import com.swiftbridge.orchestrator.dto.HistoryItemDTO;
-import com.swiftbridge.orchestrator.dto.HistoryListResponse;
+import com.swiftbridge.orchestrator.dto.history.HistoryItemDTO;
+import com.swiftbridge.orchestrator.dto.history.HistoryListResponse;
 import com.swiftbridge.orchestrator.entity.ConversionStatus;
 import com.swiftbridge.orchestrator.service.HistoryService;
 import lombok.RequiredArgsConstructor;

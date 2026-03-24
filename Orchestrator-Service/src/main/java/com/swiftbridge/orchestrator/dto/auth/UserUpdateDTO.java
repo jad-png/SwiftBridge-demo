@@ -1,22 +1,22 @@
-package com.swiftbridge.orchestrator.dto;
+package com.swiftbridge.orchestrator.dto.auth;
 
 import com.swiftbridge.orchestrator.entity.AppRole;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserResponseDTO {
+public class UserUpdateDTO {
 
-    private Long id;
-    private String username;
+    @Email(message = "Email should be valid")
     private String email;
+
+    @NotNull(message = "Role cannot be null")
     private AppRole role;
-    private LocalDateTime createdAt;
 }

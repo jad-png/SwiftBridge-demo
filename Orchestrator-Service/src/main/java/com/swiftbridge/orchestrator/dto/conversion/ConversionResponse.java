@@ -1,4 +1,4 @@
-package com.swiftbridge.orchestrator.dto;
+package com.swiftbridge.orchestrator.dto.conversion;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.swiftbridge.orchestrator.dto;
+package com.swiftbridge.orchestrator.dto.auth;
 
 import lombok.Builder;
 import lombok.Getter;

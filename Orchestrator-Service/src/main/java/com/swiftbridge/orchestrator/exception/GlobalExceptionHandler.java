@@ -1,6 +1,6 @@
 package com.swiftbridge.orchestrator.exception;
 
-import com.swiftbridge.orchestrator.dto.ErrorResponseDTO;
+import com.swiftbridge.orchestrator.dto.error.ErrorResponseDTO;
 import com.swiftbridge.orchestrator.utils.CorrelationIdUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;

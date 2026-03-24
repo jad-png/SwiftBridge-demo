@@ -1,6 +1,6 @@
 package com.swiftbridge.orchestrator.service;
 
-import com.swiftbridge.orchestrator.dto.ConversionResponse;
+import com.swiftbridge.orchestrator.dto.conversion.ConversionResponse;
 
 public interface CoreConverterClient {
 

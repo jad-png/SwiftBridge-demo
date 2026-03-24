@@ -1,8 +1,8 @@
 package com.swiftbridge.orchestrator.controller;
 
-import com.swiftbridge.orchestrator.dto.LoginRequest;
-import com.swiftbridge.orchestrator.dto.LoginResponse;
-import com.swiftbridge.orchestrator.dto.RegisterRequest;
+import com.swiftbridge.orchestrator.dto.auth.LoginRequest;
+import com.swiftbridge.orchestrator.dto.auth.LoginResponse;
+import com.swiftbridge.orchestrator.dto.auth.RegisterRequest;
 import com.swiftbridge.orchestrator.entity.AppRole;
 import com.swiftbridge.orchestrator.entity.AppUser;
 import com.swiftbridge.orchestrator.repository.AppUserRepository;

@@ -1,7 +1,7 @@
 package com.swiftbridge.orchestrator.service.Impl;
 
-import com.swiftbridge.orchestrator.dto.HistoryItemDTO;
-import com.swiftbridge.orchestrator.dto.HistoryListResponse;
+import com.swiftbridge.orchestrator.dto.history.HistoryItemDTO;
+import com.swiftbridge.orchestrator.dto.history.HistoryListResponse;
 import com.swiftbridge.orchestrator.entity.AppUser;
 import com.swiftbridge.orchestrator.entity.ConversionStatus;
 import com.swiftbridge.orchestrator.entity.TransactionHistory;

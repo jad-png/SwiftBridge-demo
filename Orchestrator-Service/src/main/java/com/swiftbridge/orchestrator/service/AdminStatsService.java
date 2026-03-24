@@ -1,9 +1,9 @@
 package com.swiftbridge.orchestrator.service;
 
-import com.swiftbridge.orchestrator.dto.AdminMetricsDTO;
-import com.swiftbridge.orchestrator.dto.AdminStatsResponse;
-import com.swiftbridge.orchestrator.dto.ConversionVolumeItemDTO;
-import com.swiftbridge.orchestrator.dto.SuccessRateTrendItemDTO;
+import com.swiftbridge.orchestrator.dto.stats.AdminMetricsDTO;
+import com.swiftbridge.orchestrator.dto.stats.AdminStatsResponse;
+import com.swiftbridge.orchestrator.dto.stats.ConversionVolumeItemDTO;
+import com.swiftbridge.orchestrator.dto.stats.SuccessRateTrendItemDTO;
 import com.swiftbridge.orchestrator.entity.ConversionStatus;
 import com.swiftbridge.orchestrator.repository.AppUserRepository;
 import com.swiftbridge.orchestrator.repository.TransactionHistoryRepository;
