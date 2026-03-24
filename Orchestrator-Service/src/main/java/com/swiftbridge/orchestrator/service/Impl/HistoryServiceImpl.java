@@ -7,6 +7,7 @@ import com.swiftbridge.orchestrator.entity.ConversionStatus;
 import com.swiftbridge.orchestrator.entity.TransactionHistory;
 import com.swiftbridge.orchestrator.repository.AppUserRepository;
 import com.swiftbridge.orchestrator.repository.TransactionHistoryRepository;
+import com.swiftbridge.orchestrator.repository.TransactionHistorySpecifications;
 import com.swiftbridge.orchestrator.security.SecurityUtils;
 import com.swiftbridge.orchestrator.service.HistoryService;
 import com.swiftbridge.orchestrator.service.HistoryQueryValidator;
@@ -48,11 +49,9 @@ public class HistoryServiceImpl implements HistoryService {
         LocalDateTime startTime = date == null ? null : date.atStartOfDay();
         LocalDateTime endTime = date == null ? null : date.plusDays(1).atStartOfDay().minusNanos(1);
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "requestTimestamp"));
-        Page<TransactionHistory> result = transactionHistoryRepository.findByUserFilters(
-            currentUserId,
-            startTime,
-            endTime,
-            status,
+
+        Page<TransactionHistory> result = transactionHistoryRepository.findAll(
+            TransactionHistorySpecifications.userFilters(currentUserId, startTime, endTime, status),
             pageable
         );
 

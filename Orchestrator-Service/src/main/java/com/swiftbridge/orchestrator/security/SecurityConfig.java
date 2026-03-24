@@ -57,7 +57,8 @@ public class SecurityConfig {
                         .requestMatchers("DELETE", "/api/v1/users/**").hasAuthority("ROLE_ADMIN")
 
                         .requestMatchers("/api/convert", "/api/convert/**").hasAuthority("ROLE_USER")
-                        .requestMatchers("/api/history/**").hasAuthority("ROLE_USER")
+                        .requestMatchers("/api/history/**").authenticated()
+                        .requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated());
         http.addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
 

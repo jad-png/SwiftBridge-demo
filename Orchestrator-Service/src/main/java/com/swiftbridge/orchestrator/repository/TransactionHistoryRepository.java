@@ -6,6 +6,7 @@ import com.swiftbridge.orchestrator.repository.projection.DailyConversionStatsPr
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -15,53 +16,42 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface TransactionHistoryRepository extends JpaRepository<TransactionHistory, Long> {
+public interface TransactionHistoryRepository extends JpaRepository<TransactionHistory, Long>, JpaSpecificationExecutor<TransactionHistory> {
 
   List<TransactionHistory> findAllByConversionStatus(ConversionStatus conversionStatus);
 
   @Query("SELECT t FROM TransactionHistory t WHERE t.requestTimestamp BETWEEN :startTime AND :endTime ORDER BY t.requestTimestamp DESC")
-    List<TransactionHistory> findTransactionsByDateRange(LocalDateTime startTime, LocalDateTime endTime);
+  List<TransactionHistory> findTransactionsByDateRange(LocalDateTime startTime, LocalDateTime endTime);
 
-    @Query("""
-        SELECT t FROM TransactionHistory t
-        WHERE (:startTime IS NULL OR t.requestTimestamp >= :startTime)
-          AND (:endTime IS NULL OR t.requestTimestamp <= :endTime)
-          AND (:status IS NULL OR t.conversionStatus = :status)
-        ORDER BY t.requestTimestamp DESC
-        """)
-    Page<TransactionHistory> findByFilters(@Param("startTime") LocalDateTime startTime,
-                                           @Param("endTime") LocalDateTime endTime,
-                                           @Param("status") ConversionStatus status,
-                                           Pageable pageable);
-
-    @Query("SELECT COUNT(t) FROM TransactionHistory t WHERE t.conversionStatus = SUCCESS")
-    long countSuccessfulConversions();
-
-    long countByConversionStatus(ConversionStatus conversionStatus);
-
-    long countByUser_Id(Long userId);
-
-    long countByUser_IdAndConversionStatus(Long userId, ConversionStatus conversionStatus);
-
-    List<TransactionHistory> findTop5ByUser_IdOrderByRequestTimestampDesc(Long userId);
-
-    Optional<TransactionHistory> findByTransactionId(String transactionId);
-
-    @Query("""
+  @Query("""
       SELECT t FROM TransactionHistory t
-      WHERE t.user.id = :userId
-        AND (:startTime IS NULL OR t.requestTimestamp >= :startTime)
-        AND (:endTime IS NULL OR t.requestTimestamp <= :endTime)
+      WHERE (:startTime IS NULL OR t.requestTimestamp >= CAST(:startTime AS timestamp))
+        AND (:endTime IS NULL OR t.requestTimestamp <= CAST(:endTime AS timestamp))
         AND (:status IS NULL OR t.conversionStatus = :status)
       ORDER BY t.requestTimestamp DESC
       """)
-    Page<TransactionHistory> findByUserFilters(@Param("userId") Long userId,
-                           @Param("startTime") LocalDateTime startTime,
-                           @Param("endTime") LocalDateTime endTime,
-                           @Param("status") ConversionStatus status,
-                           Pageable pageable);
+  Page<TransactionHistory> findByFilters(@Param("startTime") LocalDateTime startTime,
+      @Param("endTime") LocalDateTime endTime,
+      @Param("status") ConversionStatus status,
+      Pageable pageable);
 
-    @Query(value = """
+  @Query("SELECT COUNT(t) FROM TransactionHistory t WHERE t.conversionStatus = 'SUCCESS'")
+  long countSuccessfulConversions();
+
+  long countByConversionStatus(ConversionStatus conversionStatus);
+
+  long countByUser_Id(Long userId);
+
+  long countByUser_IdAndConversionStatus(Long userId, ConversionStatus conversionStatus);
+
+  List<TransactionHistory> findTop5ByUser_IdOrderByRequestTimestampDesc(Long userId);
+
+  Optional<TransactionHistory> findByTransactionId(String transactionId);
+
+
+  // Specification-based filtering; see service layer for usage
+
+  @Query(value = """
       SELECT DATE(t.request_timestamp) AS day,
            COUNT(*) AS total,
            SUM(CASE WHEN t.conversion_status = 'SUCCESS' THEN 1 ELSE 0 END) AS success
@@ -70,9 +60,9 @@ public interface TransactionHistoryRepository extends JpaRepository<TransactionH
       GROUP BY DATE(t.request_timestamp)
       ORDER BY DATE(t.request_timestamp) DESC
       """, nativeQuery = true)
-    List<DailyConversionStatsProjection> findDailyStatsByUserId(@Param("userId") Long userId);
+  List<DailyConversionStatsProjection> findDailyStatsByUserId(@Param("userId") Long userId);
 
-    @Query(value = """
+  @Query(value = """
       SELECT DATE(t.request_timestamp) AS day,
            COUNT(*) AS total,
            SUM(CASE WHEN t.conversion_status = 'SUCCESS' THEN 1 ELSE 0 END) AS success
@@ -80,5 +70,5 @@ public interface TransactionHistoryRepository extends JpaRepository<TransactionH
       GROUP BY DATE(t.request_timestamp)
       ORDER BY DATE(t.request_timestamp) DESC
       """, nativeQuery = true)
-    List<DailyConversionStatsProjection> findDailyStatsGlobal();
+  List<DailyConversionStatsProjection> findDailyStatsGlobal();
 }
