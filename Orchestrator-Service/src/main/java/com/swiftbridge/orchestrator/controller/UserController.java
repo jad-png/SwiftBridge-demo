@@ -1,12 +1,13 @@
 package com.swiftbridge.orchestrator.controller;
 
+import com.swiftbridge.orchestrator.dto.UserStatsResponse;
+import com.swiftbridge.orchestrator.service.UserStatsService;
 import com.swiftbridge.orchestrator.dto.UserResponseDTO;
 import com.swiftbridge.orchestrator.dto.UserUpdateDTO;
 import com.swiftbridge.orchestrator.service.UserManagementService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,12 +22,13 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/v1/users")
+@RequestMapping({"/api/v1/users", "/api/users"})
 @RequiredArgsConstructor
 @Slf4j
 public class UserController {
 
     private final UserManagementService userManagementService;
+    private final UserStatsService userStatsService;
 
     @GetMapping
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
@@ -42,6 +44,13 @@ public class UserController {
         log.info("GET /api/v1/users/me - Fetching current user profile");
         UserResponseDTO userProfile = userManagementService.getCurrentUserProfile();
         return ResponseEntity.ok(userProfile);
+    }
+
+    @GetMapping("/stats")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<UserStatsResponse> getCurrentUserStats() {
+        log.info("GET /api/v1/users/stats - Fetching current user stats");
+        return ResponseEntity.ok(userStatsService.getCurrentUserStats());
     }
 
     @PutMapping("/{id}")

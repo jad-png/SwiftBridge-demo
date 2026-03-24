@@ -1,0 +1,73 @@
+================================================================================
+          SWIFTBRIDGE - TECHNICAL AUDIT (BACKEND ONLY)
+          Orchestrator Service + Core Converter Engine
+================================================================================
+
+SCOPE BASIS
+-----------
+Chapters 4.3, 4.4, 5, 6 only
+Frontend (Chapter 4.2) excluded from calculation
+
+IMPLEMENTATION STATUS
+---------------------
+Feature                                          Status      Ref. Class
+────────────────────────────────────────────────────────────────────────
+Orchestrator routing → Core gateway              DONE        ConversionController
+Core pacs.008 → MT103 conversion flow            DONE        Pacs008ToMt103Mapper
+MT103 5-block generation ({1}..{5})             DONE        MT103Builder
+Mapping tags :32A:, :50K:, :59:                 DONE        Pacs008ToMt103Mapper
+pacs.008 structural robustness (XPath align)    PARTIAL     Pacs008Xpaths, FieldExtractor
+JWT validation on /api/convert                   DONE        SecurityConfig
+JWT validation on /api/history                   DONE        SecurityConfig
+JWT token parsing/verification filter            DONE        JwtAuthenticationFilter, JwtUtil
+Transaction metadata persistence (JPA)           DONE        TransactionHistory, Repository
+Chapter 6: No financial data in DB               DONE        V2__sanitize_transaction_history.sql
+Internal core access hardening (code level)      PARTIAL     application.yml (key config only)
+
+API ENDPOINTS (ACTIVE BACKEND)
+------------------------------
+CONVERSION FLOW:
+  POST  /convert                    (orchestrator endpoint)
+  POST  /api/convert                (orchestrator endpoint)
+  GET   /convert/health
+
+AUTHENTICATION:
+  POST  /api/auth/login
+  POST  /api/auth/register
+
+HISTORY & REPORTING:
+  GET   /api/conversions
+  GET   /api/conversions/{id}
+  GET   /api/history
+  GET   /api/history/{id}
+
+USER MANAGEMENT:
+  GET   /api/v1/users
+  GET   /api/v1/users/me
+  PUT   /api/v1/users/{id}
+  DELETE /api/v1/users/{id}
+
+ADMIN:
+  GET   /api/admin
+
+INTERNAL (CORE):
+  POST  /api/v1/internal/convert
+
+COMPLETION CALCULATION (BACKEND-ONLY)
+-------------------------------------
+Total requirements (Ch. 4.3, 4.4, 5, 6):  11
+  Done                                     9
+  Partial                                  2
+  Pending                                  0
+
+Weighted Score: (9 + 0.5×2) / 11 = 10/11
+Completion Estimate: 90.9%
+
+KEY FINDINGS
+-----------
+✓ Mapping logic for :32A:, :50K:, :59: end-to-end implemented
+✓ JWT protection active on /api/convert and /api/history via role-based rules
+✓ Database stores metadata only (no debtor/creditor/amount/account in persistence)
+⚠ XPath alignment partially complete (fallback paths defined but unused)
+⚠ Internal Core API key configured but no code-level enforcement filter detected
+================================================================================

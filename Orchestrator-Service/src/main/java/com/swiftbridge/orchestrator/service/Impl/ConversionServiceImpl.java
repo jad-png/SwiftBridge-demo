@@ -36,9 +36,10 @@ public class ConversionServiceImpl implements ConversionService {
             String mt103Result = coreResponse.getMt103();
             log.info("Pre-validation trace - extracted :32A: amount value: {}", extractAmountFromTag32A(mt103Result));
             ConversionValidator.ValidationResult validationResult = conversionValidator.validate(mt103Result);
+            String messageReference = resolveMessageReference(validationResult);
 
             historyService.saveSuccess(
-                validationResult == null ? null : validationResult.instructionId(),
+                messageReference,
                 calculateProcessingDurationMs(startNanos)
             );
             long processingDurationMs = calculateProcessingDurationMs(startNanos);
@@ -47,6 +48,7 @@ public class ConversionServiceImpl implements ConversionService {
                 .mt103(mt103Result)
                 .warnings(coreResponse.getWarnings())
                 .processingTimeMs(processingDurationMs)
+                .messageReference(messageReference)
                 .build();
 
         } catch (FinancialValidationException ex) {
@@ -96,5 +98,18 @@ public class ConversionServiceImpl implements ConversionService {
         }
 
         return "<tag-32A-not-found>";
+    }
+
+    private String resolveMessageReference(ConversionValidator.ValidationResult validationResult) {
+        if (validationResult == null) {
+            return null;
+        }
+
+        String instructionId = validationResult.instructionId();
+        if (instructionId == null || instructionId.isBlank()) {
+            return null;
+        }
+
+        return instructionId;
     }
 }

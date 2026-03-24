@@ -31,4 +31,11 @@ public class HistoryQueryValidatorImpl implements HistoryQueryValidator {
             throw new IllegalArgumentException("Parameter 'id' must be a positive number");
         }
     }
+
+    @Override
+    public void validateTransactionId(String transactionId) {
+        if (transactionId == null || transactionId.isBlank()) {
+            throw new IllegalArgumentException("Parameter 'txnId' is required");
+        }
+    }
 }

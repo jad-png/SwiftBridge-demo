@@ -1,7 +1,6 @@
 package com.swiftbridge.orchestrator.security;
 
 import com.swiftbridge.orchestrator.exception.UnauthorizedException;
-import com.swiftbridge.orchestrator.repository.AppUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -10,8 +9,6 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class SecurityUtils {
-
-  private final AppUserRepository userRepository;
 
   public UserPrincipal getCurrentUser() {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();

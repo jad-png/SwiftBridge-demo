@@ -12,4 +12,5 @@ public class ConversionResponse {
     private String mt103;
     private List<String> warnings;
     private long processingTimeMs;
+    private String messageReference;
 }

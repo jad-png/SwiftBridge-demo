@@ -1,8 +1,13 @@
 package com.swiftbridge.orchestrator.service.Impl;
 
+import com.swiftbridge.orchestrator.dto.HistoryItemDTO;
+import com.swiftbridge.orchestrator.dto.HistoryListResponse;
+import com.swiftbridge.orchestrator.entity.AppUser;
 import com.swiftbridge.orchestrator.entity.ConversionStatus;
 import com.swiftbridge.orchestrator.entity.TransactionHistory;
+import com.swiftbridge.orchestrator.repository.AppUserRepository;
 import com.swiftbridge.orchestrator.repository.TransactionHistoryRepository;
+import com.swiftbridge.orchestrator.security.SecurityUtils;
 import com.swiftbridge.orchestrator.service.HistoryService;
 import com.swiftbridge.orchestrator.service.HistoryQueryValidator;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -27,32 +33,69 @@ public class HistoryServiceImpl implements HistoryService {
 
     private final TransactionHistoryRepository transactionHistoryRepository;
     private final HistoryQueryValidator historyQueryValidator;
+    private final SecurityUtils securityUtils;
+    private final AppUserRepository appUserRepository;
 
     @Override
     @Transactional(readOnly = true)
-    public Page<TransactionHistory> findFilteredHistory(LocalDate date,
-                                                        ConversionStatus status,
-                                                        int page,
-                                                        int size) {
+    public HistoryListResponse findFilteredHistory(LocalDate date,
+                                                   ConversionStatus status,
+                                                   int page,
+                                                   int size) {
         historyQueryValidator.validateFilters(date, page, size);
 
+        Long currentUserId = securityUtils.getCurrentUser().getId();
         LocalDateTime startTime = date == null ? null : date.atStartOfDay();
         LocalDateTime endTime = date == null ? null : date.plusDays(1).atStartOfDay().minusNanos(1);
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "requestTimestamp"));
-        return transactionHistoryRepository.findByFilters(startTime, endTime, status, pageable);
+        Page<TransactionHistory> result = transactionHistoryRepository.findByUserFilters(
+            currentUserId,
+            startTime,
+            endTime,
+            status,
+            pageable
+        );
+
+        List<HistoryItemDTO> items = result.getContent().stream()
+            .map(this::toHistoryItem)
+            .toList();
+
+        return HistoryListResponse.builder()
+            .items(items)
+            .pagination(HistoryListResponse.PaginationDTO.builder()
+                .total(result.getTotalElements())
+                .build())
+            .build();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<TransactionHistory> getHistoryById(Long id) {
+    public Optional<HistoryItemDTO> getHistoryByTransactionId(String transactionId) {
+        historyQueryValidator.validateTransactionId(transactionId);
+        Long currentUserId = securityUtils.getCurrentUser().getId();
+
+        return transactionHistoryRepository.findByTransactionId(transactionId)
+            .filter(history -> isOwnedByCurrentUserOrAdmin(history, currentUserId))
+            .map(this::toHistoryItem);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<HistoryItemDTO> getHistoryById(Long id) {
         historyQueryValidator.validateHistoryId(id);
-        return transactionHistoryRepository.findById(id);
+
+        Long currentUserId = securityUtils.getCurrentUser().getId();
+        return transactionHistoryRepository.findById(id)
+            .filter(history -> isOwnedByCurrentUserOrAdmin(history, currentUserId))
+            .map(this::toHistoryItem);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void saveSuccess(String messageReference,
                             long processingDurationMs) {
+        AppUser currentUser = resolveCurrentUser();
+
         TransactionHistory transaction = TransactionHistory.builder()
             .transactionId(UUID.randomUUID().toString())
             .conversionStatus(ConversionStatus.SUCCESS)
@@ -60,6 +103,7 @@ public class HistoryServiceImpl implements HistoryService {
             .messageReference(messageReference)
             .messageType("MT103")
             .processingDurationMs(processingDurationMs)
+            .user(currentUser)
             .build();
 
         transactionHistoryRepository.save(transaction);
@@ -69,6 +113,8 @@ public class HistoryServiceImpl implements HistoryService {
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
     public void saveFailureInNewTransaction(String messageReference,
                                             long processingDurationMs) {
+        AppUser currentUser = resolveCurrentUser();
+
         TransactionHistory transaction = TransactionHistory.builder()
             .transactionId(UUID.randomUUID().toString())
             .conversionStatus(ConversionStatus.FAILED)
@@ -76,9 +122,43 @@ public class HistoryServiceImpl implements HistoryService {
             .messageReference(messageReference)
             .messageType("MT103")
             .processingDurationMs(processingDurationMs)
+            .user(currentUser)
             .build();
 
         transactionHistoryRepository.save(transaction);
         log.info("Saved FAILED transaction history record with reference: {}", messageReference);
+    }
+
+    private AppUser resolveCurrentUser() {
+        try {
+            Long userId = securityUtils.getCurrentUser().getId();
+            return appUserRepository.findById(userId).orElse(null);
+        } catch (Exception ex) {
+            log.debug("No authenticated user resolved for history persistence");
+            return null;
+        }
+    }
+
+    private boolean isOwnedByCurrentUserOrAdmin(TransactionHistory history, Long currentUserId) {
+        if (securityUtils.isAdmin()) {
+            return true;
+        }
+
+        if (history.getUser() == null) {
+            return false;
+        }
+
+        return history.getUser().getId().equals(currentUserId);
+    }
+
+    private HistoryItemDTO toHistoryItem(TransactionHistory transactionHistory) {
+        return HistoryItemDTO.builder()
+            .transactionId(transactionHistory.getTransactionId())
+            .conversionStatus(transactionHistory.getConversionStatus().name())
+            .requestTimestamp(transactionHistory.getRequestTimestamp())
+            .processingDurationMs(transactionHistory.getProcessingDurationMs())
+            .messageType(transactionHistory.getMessageType())
+            .messageReference(transactionHistory.getMessageReference())
+            .build();
     }
 }

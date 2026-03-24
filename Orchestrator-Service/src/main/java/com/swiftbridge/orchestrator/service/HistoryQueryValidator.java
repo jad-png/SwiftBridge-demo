@@ -7,4 +7,6 @@ public interface HistoryQueryValidator {
     void validateFilters(LocalDate date, int page, int size);
 
     void validateHistoryId(Long id);
+
+    void validateTransactionId(String transactionId);
 }
