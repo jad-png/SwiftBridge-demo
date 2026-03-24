@@ -1,10 +1,11 @@
 package com.swiftbridge.orchestrator.controller;
 
 import com.swiftbridge.orchestrator.dto.stats.UserStatsResponse;
+import com.swiftbridge.orchestrator.service.UserManagementService;
 import com.swiftbridge.orchestrator.service.UserStatsService;
 import com.swiftbridge.orchestrator.dto.auth.UserResponseDTO;
 import com.swiftbridge.orchestrator.dto.auth.UserUpdateDTO;
-import com.swiftbridge.orchestrator.service.UserManagementService;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

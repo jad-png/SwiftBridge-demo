@@ -1,72 +1,209 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.08">
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<Envelope>
+
+  <AppHdr xmlns="urn:iso:std:iso:20022:tech:xsd:head.001.001.02" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:iso:std:iso:20022:tech:xsd:head.001.001.02 BusinessApplicationHeaderV02.xsd">
+    <Fr>
+      <FIId>
+        <FinInstnId>
+          <BICFI>SURDDEHHXXX</BICFI>
+        </FinInstnId>
+      </FIId>
+    </Fr>
+    <To>
+      <FIId>
+        <FinInstnId>
+          <BICFI>SCBKCHZUXXX</BICFI>
+        </FinInstnId>
+      </FIId>
+    </To>
+    <BizMsgIdr>IsGeneratedFrom'DOKA'&lt;OWNREF&gt;&lt;TRNINR&gt;</BizMsgIdr>
+    <MsgDefIdr>pacs.008.001.08</MsgDefIdr>
+    <BizSvc>swift.cbprplus.03</BizSvc>
+    <CreDt>2025-10-08T16:36:54+02:00</CreDt>
+  </AppHdr>
+
+  <Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.08" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.08 FIToFICustomerCreditTransferV08.xsd">
     <FIToFICstmrCdtTrf>
-        
-        <GrpHdr>
-            <MsgId>MSG0001</MsgId>
-            <CreDtTm>2026-03-23T10:15:30</CreDtTm>
-            <NbOfTxs>1</NbOfTxs>
-            <SttlmInf>
-                <SttlmMtd>CLRG</SttlmMtd>
-            </SttlmInf>
-        </GrpHdr>
-
-        <CdtTrfTxInf>
-            
-            <!-- Payment Identification -->
-            <PmtId>
-                <InstrId>INSTR0001</InstrId>
-                <EndToEndId>E2E0001</EndToEndId>
-                <UETR>123e4567-e89b-12d3-a456-426614174000</UETR>
-            </PmtId>
-
-            <!-- Amount (IMPORTANT) -->
-            <IntrBkSttlmAmt Ccy="EUR">1000.00</IntrBkSttlmAmt>
-
-            <!-- Debtor (IMPORTANT) -->
-            <Dbtr>
-                <Nm>John Doe</Nm>
-            </Dbtr>
-
-            <!-- Debtor Account -->
-            <DbtrAcct>
-                <Id>
-                    <IBAN>DE89370400440532013000</IBAN>
-                </Id>
-            </DbtrAcct>
-
-            <!-- Debtor Agent -->
-            <DbtrAgt>
-                <FinInstnId>
-                    <BICFI>DEUTDEFF</BICFI>
-                </FinInstnId>
-            </DbtrAgt>
-
-            <!-- Creditor Agent -->
-            <CdtrAgt>
-                <FinInstnId>
-                    <BICFI>BNPAFRPP</BICFI>
-                </FinInstnId>
-            </CdtrAgt>
-
-            <!-- Creditor -->
-            <Cdtr>
-                <Nm>Jane Smith</Nm>
-            </Cdtr>
-
-            <!-- Creditor Account -->
-            <CdtrAcct>
-                <Id>
-                    <IBAN>FR7630006000011234567890189</IBAN>
-                </Id>
-            </CdtrAcct>
-
-            <!-- Remittance Info -->
-            <RmtInf>
-                <Ustrd>Payment for invoice #12345</Ustrd>
-            </RmtInf>
-
-        </CdtTrfTxInf>
-
+      <GrpHdr>
+        <MsgId>IsGeneratedFrom'DOKA'&lt;OWNREF&gt;&lt;TRNINR&gt;</MsgId>
+        <CreDtTm>2025-10-08T16:36:54+02:00</CreDtTm>
+        <NbOfTxs>1</NbOfTxs>
+        <SttlmInf>
+          <SttlmMtd>COVE</SttlmMtd>
+          <InstgRmbrsmntAgt>
+            <FinInstnId>
+              <BICFI>LZB1DEHHXXX</BICFI>
+              <Nm>Landeszentralbank</Nm>
+              <PstlAdr>
+                <PstCd>22393</PstCd>
+                <TwnNm>Hamburg</TwnNm>
+                <Ctry>DE</Ctry>
+              </PstlAdr>
+            </FinInstnId>
+          </InstgRmbrsmntAgt>
+          <InstgRmbrsmntAgtAcct>
+            <Id>
+              <Othr>
+                <Id>00004711</Id>
+              </Othr>
+            </Id>
+          </InstgRmbrsmntAgtAcct>
+          <InstdRmbrsmntAgt>
+            <FinInstnId>
+              <BICFI>NDEAFIHHXXX</BICFI>
+              <Nm>NORDEA BANK ABP</Nm>
+              <PstlAdr>
+                <PstCd>00020</PstCd>
+                <TwnNm>HELSINKI</TwnNm>
+                <Ctry>FR</Ctry>
+              </PstlAdr>
+            </FinInstnId>
+          </InstdRmbrsmntAgt>
+          <InstdRmbrsmntAgtAcct>
+            <Id>
+              <Othr>
+                <Id>213</Id>
+              </Othr>
+            </Id>
+          </InstdRmbrsmntAgtAcct>
+          <ThrdRmbrsmntAgt>
+            <FinInstnId>
+              <BICFI>TDOMCATTXXX</BICFI>
+              <Nm>TORONTO-DOMINION BANK, THE</Nm>
+              <PstlAdr>
+                <PstCd>M5K 1A2</PstCd>
+                <TwnNm>Toronto, ON</TwnNm>
+                <Ctry>CA</Ctry>
+              </PstlAdr>
+            </FinInstnId>
+          </ThrdRmbrsmntAgt>
+          <ThrdRmbrsmntAgtAcct>
+            <Id>
+              <Othr>
+                <Id>34555</Id>
+              </Othr>
+            </Id>
+          </ThrdRmbrsmntAgtAcct>
+        </SttlmInf>
+      </GrpHdr>
+      <CdtTrfTxInf>
+        <PmtId>
+          <InstrId></InstrId>
+          <EndToEndId>NOTPROVIDED</EndToEndId>
+          <UETR>ID for UETR generation: F860DEED</UETR>
+        </PmtId>
+        <IntrBkSttlmAmt Ccy="EUR">7788.79</IntrBkSttlmAmt>
+        <IntrBkSttlmDt>2025-10-09</IntrBkSttlmDt>
+        <InstdAmt Ccy="EUR">10000</InstdAmt>
+        <ChrgBr>SHAR</ChrgBr>
+        <InstgAgt>
+          <FinInstnId>
+            <BICFI>SURDDEHHXXX</BICFI>
+          </FinInstnId>
+        </InstgAgt>
+        <InstdAgt>
+          <FinInstnId>
+            <BICFI>SCBKCHZUXXX</BICFI>
+          </FinInstnId>
+        </InstdAgt>
+        <IntrmyAgt1>
+          <FinInstnId>
+            <BICFI>BICCVECAXXX</BICFI>
+            <Nm>Banco Caracas</Nm>
+            <PstlAdr>
+              <TwnNm>Caracas</TwnNm>
+              <Ctry>VE</Ctry>
+            </PstlAdr>
+          </FinInstnId>
+        </IntrmyAgt1>
+        <IntrmyAgt1Acct>
+          <Id>
+            <Othr>
+              <Id>4444</Id>
+            </Othr>
+          </Id>
+        </IntrmyAgt1Acct>
+        <Dbtr>
+          <Id>
+            <OrgId>
+              <AnyBIC>SURDDEHHXXX</AnyBIC>
+              <Othr>
+                <Id>20001</Id>
+                <SchmeNm>
+                  <Cd>CUST</Cd>
+                </SchmeNm>
+              </Othr>
+            </OrgId>
+          </Id>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <Othr>
+              <Id>0045200789</Id>
+            </Othr>
+          </Id>
+        </DbtrAcct>
+        <DbtrAgt>
+          <FinInstnId>
+            <BICFI>SURDDEHHXXX</BICFI>
+            <Nm>Surecomp DOS Bank AG</Nm>
+            <PstlAdr>
+              <PstCd>22303</PstCd>
+              <TwnNm>Hamburg</TwnNm>
+              <Ctry>DE</Ctry>
+            </PstlAdr>
+          </FinInstnId>
+        </DbtrAgt>
+        <DbtrAgtAcct>
+          <Id>
+            <Othr>
+              <Id>01000810090</Id>
+            </Othr>
+          </Id>
+        </DbtrAgtAcct>
+        <CdtrAgt>
+          <FinInstnId>
+            <BICFI>BATAUSNYXXX</BICFI>
+            <Nm>Bank of Trade</Nm>
+            <PstlAdr>
+              <TwnNm>New York</TwnNm>
+              <Ctry>US</Ctry>
+            </PstlAdr>
+          </FinInstnId>
+        </CdtrAgt>
+        <CdtrAgtAcct>
+          <Id>
+            <Othr>
+              <Id>BANK123</Id>
+            </Othr>
+          </Id>
+        </CdtrAgtAcct>
+        <Cdtr>
+          <Nm>Flying Carpets</Nm>
+          <PstlAdr>
+            <PstCd>JP-74-CD</PstCd>
+            <TwnNm>Tokyo 205-7321</TwnNm>
+            <Ctry>JP</Ctry>
+          </PstlAdr>
+        </Cdtr>
+        <CdtrAcct>
+          <Id>
+            <Othr>
+              <Id>CRED123</Id>
+            </Othr>
+          </Id>
+        </CdtrAcct>
+        <InstrForCdtrAgt>
+          <Cd>CHQB</Cd>
+        </InstrForCdtrAgt>
+        <InstrForNxtAgt>
+          <InstrInf>TEST</InstrInf>
+        </InstrForNxtAgt>
+        <RmtInf>
+          <Ustrd>REIM</Ustrd>
+        </RmtInf>
+      </CdtTrfTxInf>
     </FIToFICstmrCdtTrf>
-</Document>
+  </Document>
+
+</Envelope>
