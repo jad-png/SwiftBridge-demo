@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 public class HistoryItemDTO {
 
     private String transactionId;
+    private String username;
     private String conversionStatus;
     private LocalDateTime requestTimestamp;
     private Long processingDurationMs;

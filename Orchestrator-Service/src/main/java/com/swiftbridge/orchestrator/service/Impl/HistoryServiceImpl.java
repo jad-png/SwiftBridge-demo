@@ -1,5 +1,7 @@
+
 package com.swiftbridge.orchestrator.service.Impl;
 
+import com.swiftbridge.orchestrator.dto.history.ConversionAuditDTO;
 import com.swiftbridge.orchestrator.dto.history.HistoryItemDTO;
 import com.swiftbridge.orchestrator.dto.history.HistoryListResponse;
 import com.swiftbridge.orchestrator.entity.AppUser;
@@ -37,6 +39,46 @@ public class HistoryServiceImpl implements HistoryService {
     private final SecurityUtils securityUtils;
     private final AppUserRepository appUserRepository;
 
+            @Override
+        @Transactional(readOnly = true)
+        public Optional<ConversionAuditDTO> getAuditByTransactionId(String transactionId) {
+            historyQueryValidator.validateTransactionId(transactionId);
+            Long currentUserId = securityUtils.getCurrentUser().getId();
+            return transactionHistoryRepository.findByTransactionId(transactionId)
+                .filter(history -> isOwnedByCurrentUserOrAdmin(history, currentUserId))
+                .map(history -> ConversionAuditDTO.builder()
+                    .transactionId(history.getTransactionId())
+                    .username(history.getUser() != null ? history.getUser().getUsername() : null)
+                    .conversionStatus(history.getConversionStatus().name())
+                    .messageReference(history.getMessageReference())
+                    .processingDurationMs(history.getProcessingDurationMs())
+                    .requestTimestamp(history.getRequestTimestamp() != null ? history.getRequestTimestamp().toString() : null)
+                    // TODO: populate inputData, outputContent, validationErrors, errorMessage from audit/log tables
+                    .build()
+                );
+        }
+        
+    @Override
+    @Transactional(readOnly = true)
+    public HistoryListResponse findGlobalHistory(LocalDate date, ConversionStatus status, int page, int size) {
+        LocalDateTime startTime = date == null ? null : date.atStartOfDay();
+        LocalDateTime endTime = date == null ? null : date.plusDays(1).atStartOfDay().minusNanos(1);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "requestTimestamp"));
+        Page<TransactionHistory> result = transactionHistoryRepository.findAll(
+            TransactionHistorySpecifications.userFilters(null, startTime, endTime, status),
+            pageable
+        );
+        List<HistoryItemDTO> items = result.getContent().stream()
+            .map(this::toHistoryItem)
+            .toList();
+        return HistoryListResponse.builder()
+            .items(items)
+            .pagination(HistoryListResponse.PaginationDTO.builder()
+                .total(result.getTotalElements())
+                .build())
+            .build();
+    }
+    
     @Override
     @Transactional(readOnly = true)
     public HistoryListResponse findFilteredHistory(LocalDate date,
@@ -153,6 +195,7 @@ public class HistoryServiceImpl implements HistoryService {
     private HistoryItemDTO toHistoryItem(TransactionHistory transactionHistory) {
         return HistoryItemDTO.builder()
             .transactionId(transactionHistory.getTransactionId())
+            .username(transactionHistory.getUser() != null ? transactionHistory.getUser().getUsername() : null)
             .conversionStatus(transactionHistory.getConversionStatus().name())
             .requestTimestamp(transactionHistory.getRequestTimestamp())
             .processingDurationMs(transactionHistory.getProcessingDurationMs())
