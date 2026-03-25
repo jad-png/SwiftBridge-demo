@@ -57,4 +57,16 @@ public class TransactionHistory {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private AppUser user;
+    
+    @Column(name = "input_data", columnDefinition = "TEXT")
+    private String inputData;
+
+    @Column(name = "output_content", columnDefinition = "TEXT")
+    private String outputContent;
+
+    @Column(name = "validation_errors", columnDefinition = "TEXT")
+    private String validationErrors; // JSON string
+
+    @Column(name = "error_message", columnDefinition = "TEXT")
+    private String errorMessage;
 }

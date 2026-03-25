@@ -42,20 +42,36 @@ public class HistoryServiceImpl implements HistoryService {
             @Override
         @Transactional(readOnly = true)
         public Optional<ConversionAuditDTO> getAuditByTransactionId(String transactionId) {
-            historyQueryValidator.validateTransactionId(transactionId);
-            Long currentUserId = securityUtils.getCurrentUser().getId();
-            return transactionHistoryRepository.findByTransactionId(transactionId)
-                .filter(history -> isOwnedByCurrentUserOrAdmin(history, currentUserId))
-                .map(history -> ConversionAuditDTO.builder()
+        historyQueryValidator.validateTransactionId(transactionId);
+        Long currentUserId = securityUtils.getCurrentUser().getId();
+        return transactionHistoryRepository.findByTransactionId(transactionId)
+            .filter(history -> isOwnedByCurrentUserOrAdmin(history, currentUserId))
+            .map(history -> {
+                List<ConversionAuditDTO.ValidationError> validationErrors = null;
+                if (history.getValidationErrors() != null && !history.getValidationErrors().isBlank()) {
+                    try {
+                        // Parse JSON string to List<ValidationError>
+                        com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+                        validationErrors = java.util.Arrays.asList(
+                            mapper.readValue(history.getValidationErrors(), ConversionAuditDTO.ValidationError[].class)
+                        );
+                    } catch (Exception e) {
+                        log.warn("Failed to parse validationErrors JSON for transaction {}: {}", history.getTransactionId(), e.getMessage());
+                    }
+                }
+                return ConversionAuditDTO.builder()
                     .transactionId(history.getTransactionId())
                     .username(history.getUser() != null ? history.getUser().getUsername() : null)
                     .conversionStatus(history.getConversionStatus().name())
                     .messageReference(history.getMessageReference())
                     .processingDurationMs(history.getProcessingDurationMs())
                     .requestTimestamp(history.getRequestTimestamp() != null ? history.getRequestTimestamp().toString() : null)
-                    // TODO: populate inputData, outputContent, validationErrors, errorMessage from audit/log tables
-                    .build()
-                );
+                    .inputData(history.getInputData())
+                    .outputContent(history.getOutputContent())
+                    .validationErrors(validationErrors)
+                    .errorMessage(history.getErrorMessage())
+                    .build();
+            });
         }
         
     @Override
