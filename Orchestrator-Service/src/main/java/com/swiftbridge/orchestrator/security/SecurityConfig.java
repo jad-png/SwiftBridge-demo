@@ -47,8 +47,11 @@ public class SecurityConfig {
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(entryPoint))
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/actuator/health", "/actuator/info").permitAll()
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+
                         .requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
 
                         .requestMatchers("GET", "/api/v1/users").hasAuthority("ROLE_ADMIN")
@@ -56,7 +59,7 @@ public class SecurityConfig {
                         .requestMatchers("PUT", "/api/v1/users/**").authenticated()
                         .requestMatchers("DELETE", "/api/v1/users/**").hasAuthority("ROLE_ADMIN")
 
-                        .requestMatchers("/api/convert", "/api/convert/**").hasAuthority("ROLE_USER")
+                        .requestMatchers("/api/convert", "/api/convert/**").authenticated()
                         .requestMatchers("/api/history/**").authenticated()
                         .requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated());
@@ -65,12 +68,13 @@ public class SecurityConfig {
         return http.build();
     }
 
-@Bean
+    @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://127.0.0.1:5173"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "Accept", "Origin"));
+        config.setAllowedHeaders(
+                Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "Accept", "Origin"));
         config.setAllowCredentials(true);
         config.setExposedHeaders(Arrays.asList("Authorization"));
 

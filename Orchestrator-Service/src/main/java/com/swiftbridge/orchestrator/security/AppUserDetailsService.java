@@ -1,7 +1,7 @@
 package com.swiftbridge.orchestrator.security;
 
-import com.swiftbridge.orchestrator.entity.AppUser;
-import com.swiftbridge.orchestrator.repository.AppUserRepository;
+import com.swiftbridge.orchestrator.entity.User;
+import com.swiftbridge.orchestrator.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -12,11 +12,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AppUserDetailsService implements UserDetailsService {
 
-    private final AppUserRepository appUserRepository;
+    private final UserRepository appUserRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        AppUser user = appUserRepository.findByUsername(username)
+        User user = appUserRepository.findByUsername(username)
             .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
         return UserPrincipal.create(user);

@@ -56,7 +56,7 @@ public class TransactionHistory {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private AppUser user;
+    private User user;
     
     @Column(name = "input_data", columnDefinition = "TEXT")
     private String inputData;

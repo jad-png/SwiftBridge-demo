@@ -5,7 +5,7 @@ import com.swiftbridge.orchestrator.dto.stats.AdminStatsResponse;
 import com.swiftbridge.orchestrator.dto.stats.ConversionVolumeItemDTO;
 import com.swiftbridge.orchestrator.dto.stats.SuccessRateTrendItemDTO;
 import com.swiftbridge.orchestrator.entity.ConversionStatus;
-import com.swiftbridge.orchestrator.repository.AppUserRepository;
+import com.swiftbridge.orchestrator.repository.UserRepository;
 import com.swiftbridge.orchestrator.repository.TransactionHistoryRepository;
 import com.swiftbridge.orchestrator.repository.projection.DailyConversionStatsProjection;
 import lombok.RequiredArgsConstructor;
@@ -21,12 +21,12 @@ public class AdminStatsService {
 
     private static final int TREND_DAYS = 14;
 
-    private final AppUserRepository appUserRepository;
+    private final UserRepository userRepository;
     private final TransactionHistoryRepository transactionHistoryRepository;
 
     @Transactional(readOnly = true)
     public AdminStatsResponse getAdminStats() {
-        long totalUsers = appUserRepository.count();
+        long totalUsers = userRepository.count();
         long totalConversions = transactionHistoryRepository.count();
         long totalSuccessfulConversions = transactionHistoryRepository.countByConversionStatus(ConversionStatus.SUCCESS);
 

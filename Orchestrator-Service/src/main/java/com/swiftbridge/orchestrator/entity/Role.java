@@ -1,6 +1,6 @@
 package com.swiftbridge.orchestrator.entity;
 
-public enum AppRole {
+public enum Role {
     ROLE_USER,
     ROLE_ADMIN
 }

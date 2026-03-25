@@ -3,9 +3,9 @@ package com.swiftbridge.orchestrator.controller;
 import com.swiftbridge.orchestrator.dto.auth.LoginRequest;
 import com.swiftbridge.orchestrator.dto.auth.LoginResponse;
 import com.swiftbridge.orchestrator.dto.auth.RegisterRequest;
-import com.swiftbridge.orchestrator.entity.AppRole;
-import com.swiftbridge.orchestrator.entity.AppUser;
-import com.swiftbridge.orchestrator.repository.AppUserRepository;
+import com.swiftbridge.orchestrator.entity.Role;
+import com.swiftbridge.orchestrator.entity.User;
+import com.swiftbridge.orchestrator.repository.UserRepository;
 import com.swiftbridge.orchestrator.security.JwtUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
-    private final AppUserRepository appUserRepository;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/login")
@@ -65,7 +65,7 @@ public class AuthController {
     public ResponseEntity<Map<String, Object>> register(@Valid @RequestBody RegisterRequest request) {
         Map<String, Object> response = new HashMap<>();
 
-        if (appUserRepository.findByUsername(request.getUsername()).isPresent()) {
+        if (userRepository.findByUsername(request.getUsername()).isPresent()) {
             response.put("error", "Username already exists");
             response.put("message", "The username is already registered in the system");
             return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
@@ -75,14 +75,14 @@ public class AuthController {
 
             String hashedPassword = passwordEncoder.encode(request.getPassword());
 
-            AppUser newUser = AppUser.builder()
+            User newUser = User.builder()
                     .username(request.getUsername())
                     .email(request.getEmail())
                     .passwordHash(hashedPassword)
-                    .role(AppRole.ROLE_USER)
+                    .role(Role.ROLE_USER)
                     .build();
 
-            AppUser savedUser = appUserRepository.save(newUser);
+            User savedUser = userRepository.save(newUser);
             log.info("User registered successfully: {}", savedUser.getUsername());
 
             response.put("success", true);

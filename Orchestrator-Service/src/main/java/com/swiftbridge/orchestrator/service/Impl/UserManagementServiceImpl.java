@@ -2,9 +2,9 @@ package com.swiftbridge.orchestrator.service.Impl;
 
 import com.swiftbridge.orchestrator.dto.auth.UserResponseDTO;
 import com.swiftbridge.orchestrator.dto.auth.UserUpdateDTO;
-import com.swiftbridge.orchestrator.entity.AppUser;
+import com.swiftbridge.orchestrator.entity.User;
 import com.swiftbridge.orchestrator.exception.UnauthorizedException;
-import com.swiftbridge.orchestrator.repository.AppUserRepository;
+import com.swiftbridge.orchestrator.repository.UserRepository;
 import com.swiftbridge.orchestrator.security.SecurityUtils;
 import com.swiftbridge.orchestrator.security.UserPrincipal;
 import com.swiftbridge.orchestrator.service.UserManagementService;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class UserManagementServiceImpl implements UserManagementService {
 
-    private final AppUserRepository appUserRepository;
+    private final UserRepository userRepository;
     private final SecurityUtils securityUtils;
 
     @Override
@@ -33,7 +33,7 @@ public class UserManagementServiceImpl implements UserManagementService {
         }
 
         log.info("Admin fetching all users");
-        return appUserRepository.findAll().stream()
+        return userRepository.findAll().stream()
                 .map(this::convertToResponseDTO)
                 .collect(Collectors.toList());
     }
@@ -42,7 +42,7 @@ public class UserManagementServiceImpl implements UserManagementService {
     public UserResponseDTO getCurrentUserProfile() {
         UserPrincipal currentUser = securityUtils.getCurrentUser();
 
-        AppUser user = appUserRepository.findById(currentUser.getId())
+        User user = userRepository.findById(currentUser.getId())
                 .orElseThrow(() -> {
                     log.error("Current user {} not found in database", currentUser.getId());
                     return new UnauthorizedException("User not found");
@@ -64,7 +64,7 @@ public class UserManagementServiceImpl implements UserManagementService {
             throw new UnauthorizedException("You can only update your own profile");
         }
 
-        AppUser user = appUserRepository.findById(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> {
                     log.error("User {} not found", userId);
                     return new UnauthorizedException("User not found");
@@ -85,7 +85,7 @@ public class UserManagementServiceImpl implements UserManagementService {
             log.info("Role updated for user {} to {}", user.getUsername(), updateDTO.getRole());
         }
 
-        AppUser updatedUser = appUserRepository.save(user);
+        User updatedUser = userRepository.save(user);
         return convertToResponseDTO(updatedUser);
     }
 
@@ -96,7 +96,7 @@ public class UserManagementServiceImpl implements UserManagementService {
             throw new UnauthorizedException("Only admins can delete users");
         }
 
-        AppUser user = appUserRepository.findById(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> {
                     log.error("User {} not found for deletion", userId);
                     return new UnauthorizedException("User not found");
@@ -108,11 +108,11 @@ public class UserManagementServiceImpl implements UserManagementService {
             throw new UnauthorizedException("Cannot delete your own account");
         }
 
-        appUserRepository.deleteById(userId);
+        userRepository.deleteById(userId);
         log.info("User {} deleted by admin", user.getUsername());
     }
 
-    private UserResponseDTO convertToResponseDTO(AppUser user) {
+    private UserResponseDTO convertToResponseDTO(User user) {
         return UserResponseDTO.builder()
                 .id(user.getId())
                 .username(user.getUsername())

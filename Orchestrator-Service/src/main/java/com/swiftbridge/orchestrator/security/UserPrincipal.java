@@ -1,6 +1,6 @@
 package com.swiftbridge.orchestrator.security;
 
-import com.swiftbridge.orchestrator.entity.AppUser;
+import com.swiftbridge.orchestrator.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,7 +26,7 @@ public class UserPrincipal implements UserDetails {
     private boolean active;
     private Collection<? extends GrantedAuthority> authorities;
 
-    public static UserPrincipal create(AppUser user) {
+    public static UserPrincipal create(User user) {
         List<GrantedAuthority> authorities = Collections
                 .singletonList(new SimpleGrantedAuthority(user.getRole().name()));
 

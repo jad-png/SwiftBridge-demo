@@ -1,6 +1,6 @@
 package com.swiftbridge.orchestrator.dto.auth;
 
-import com.swiftbridge.orchestrator.entity.AppRole;
+import com.swiftbridge.orchestrator.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,6 +17,6 @@ public class UserResponseDTO {
     private Long id;
     private String username;
     private String email;
-    private AppRole role;
+    private Role role;
     private LocalDateTime createdAt;
 }

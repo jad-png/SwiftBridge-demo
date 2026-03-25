@@ -1,6 +1,6 @@
 package com.swiftbridge.orchestrator.dto.auth;
 
-import com.swiftbridge.orchestrator.entity.AppRole;
+import com.swiftbridge.orchestrator.entity.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -18,5 +18,5 @@ public class UserUpdateDTO {
     private String email;
 
     @NotNull(message = "Role cannot be null")
-    private AppRole role;
+    private Role role;
 }
