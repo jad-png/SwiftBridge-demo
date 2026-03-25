@@ -50,7 +50,6 @@ public class HistoryServiceImpl implements HistoryService {
                 List<ConversionAuditDTO.ValidationError> validationErrors = null;
                 if (history.getValidationErrors() != null && !history.getValidationErrors().isBlank()) {
                     try {
-                        // Parse JSON string to List<ValidationError>
                         com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
                         validationErrors = java.util.Arrays.asList(
                             mapper.readValue(history.getValidationErrors(), ConversionAuditDTO.ValidationError[].class)
