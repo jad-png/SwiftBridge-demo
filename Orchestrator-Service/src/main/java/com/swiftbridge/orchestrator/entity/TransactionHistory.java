@@ -13,8 +13,9 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -24,7 +25,8 @@ import java.time.LocalDateTime;
     @Index(name = "idx_request_timestamp", columnList = "request_timestamp"),
     @Index(name = "idx_transaction_id", columnList = "transaction_id")
 })
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -65,7 +67,7 @@ public class TransactionHistory {
     private String outputContent;
 
     @Column(name = "validation_errors", columnDefinition = "TEXT")
-    private String validationErrors; // JSON string
+    private String validationErrors;
 
     @Column(name = "error_message", columnDefinition = "TEXT")
     private String errorMessage;
