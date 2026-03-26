@@ -27,4 +27,15 @@ public class AuditServiceImpl implements AuditService {
             log.error("Failed to persist audit record", e);
         }
     }
+
+    @Override
+    public String serializeValidationErrors(Object obj) {
+        try {
+            if (obj == null) return null;
+            return objectMapper.writeValueAsString(obj);
+        } catch (Exception e) {
+            log.warn("Failed to serialize validation errors", e);
+            return obj.toString();
+        }
+    }
 }
