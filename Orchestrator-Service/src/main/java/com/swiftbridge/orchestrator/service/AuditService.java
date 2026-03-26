@@ -4,4 +4,6 @@ import com.swiftbridge.orchestrator.entity.TransactionHistory;
 
 public interface AuditService {
     void saveAudit(TransactionHistory transactionHistory);
+
+    String serializeValidationErrors(Object obj);
 }
