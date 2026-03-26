@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.08" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <FIToFICstmrCdtTrf>
+    <GrpHdr>
+      <MsgId>DOKA-REF-2026-001</MsgId>
+      <CreDtTm>2026-03-25T10:00:00Z</CreDtTm>
+      <NbOfTxs>1</NbOfTxs>
+      <SttlmInf>
+        <SttlmMtd>COVE</SttlmMtd>
+      </SttlmInf>
+      <InstgAgt>
+        <FinInstnId>
+          <BICFI>SURDDEHHXXX</BICFI>
+        </FinInstnId>
+      </InstgAgt>
+      <InstdAgt>
+        <FinInstnId>
+          <BICFI>SCBKCHZUXXX</BICFI>
+        </FinInstnId>
+      </InstdAgt>
+    </GrpHdr>
+
+    <CdtTrfTxInf>
+      <PmtId>
+        <InstrId>INSTR-ID-001</InstrId> <EndToEndId>ENDTOEND-ID-001</EndToEndId>
+      </PmtId>
+      
+      <Amt>
+        <InstdAmt Ccy="EUR">10000.00</InstdAmt> </Amt>
+
+      <InstgAgt>
+        <FinInstnId>
+          <BICFI>SURDDEHHXXX</BICFI>
+        </FinInstnId>
+      </InstgAgt>
+
+      <InstdAgt>
+        <FinInstnId>
+          <BICFI>SCBKCHZUXXX</BICFI>
+        </FinInstnId>
+      </InstdAgt>
+
+      <Dbtr>
+        <Nm>John Doe Corp</Nm> </Dbtr>
+
+      <DbtrAcct>
+        <Id>
+          <IBAN>DE12345678901234567890</IBAN> </Id>
+      </DbtrAcct>
+
+      <DbtrAgt>
+        <FinInstnId>
+          <BICFI>SURDDEHHXXX</BICFI>
+        </FinInstnId>
+      </DbtrAgt>
+
+      <CdtrAgt>
+        <FinInstnId>
+          <BICFI>BATAUSNYXXX</BICFI>
+        </FinInstnId>
+      </CdtrAgt>
+
+      <Cdtr>
+        <Nm>Flying Carpets</Nm>
+      </Cdtr>
+
+      <CdtrAcct>
+        <Id>
+          <IBAN>JP98765432109876543210</IBAN> </Id>
+      </CdtrAcct>
+
+      <RmtInf>
+        <Ustrd>REIMBURSEMENT FOR INVOICE 123</Ustrd>
+      </RmtInf>
+    </CdtTrfTxInf>
+  </FIToFICstmrCdtTrf>
+</Document>
