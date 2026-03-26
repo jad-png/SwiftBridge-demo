@@ -78,7 +78,7 @@ public class ConversionServiceImpl implements ConversionService {
             tx.setConversionStatus(ConversionStatus.FAILED);
             tx.setErrorMessage(ex.getMessage());
             tx.setMessageReference(ex.getInstructionId());
-            tx.setValidationErrors(serializeValidationErrors(List.of(
+            tx.setValidationErrors(auditService.serializeValidationErrors(List.of(
                 ConversionAuditDTO.ValidationError.builder()
                     .message(ex.getMessage())
                     .path(ex.getInstructionId())
@@ -89,6 +89,7 @@ public class ConversionServiceImpl implements ConversionService {
             log.error("Conversion failed for file: {}", filename, ex);
             tx.setConversionStatus(ConversionStatus.FAILED);
             tx.setErrorMessage(ex.getMessage());
+            throw ex;
         } catch (Exception ex) {
             log.error("Unexpected error during conversion for file: {}", filename, ex);
             tx.setConversionStatus(ConversionStatus.FAILED);
@@ -101,7 +102,6 @@ public class ConversionServiceImpl implements ConversionService {
             tx.setProcessingDurationMs(calculateProcessingDurationMs(startNanos));
             auditService.saveAudit(tx);
         }
-        return null; // unreachable, but required for compilation
     }
 
     private User resolveCurrentUser() {
@@ -113,15 +113,6 @@ public class ConversionServiceImpl implements ConversionService {
         }
     }
 
-    private String serializeValidationErrors(Object obj) {
-        try {
-            // This should be implemented in AuditServiceImpl for real JSON serialization
-            return obj == null ? null : obj.toString();
-        } catch (Exception e) {
-            log.warn("Failed to serialize validation errors");
-            return null;
-        }
-    }
 
     private long calculateProcessingDurationMs(long startNanos) {
         return Math.max(0L, (System.nanoTime() - startNanos) / 1_000_000L);
