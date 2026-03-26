@@ -10,6 +10,7 @@ public record Pacs008Fields(
     String amountCurrency,
     String settlementDate,
     String debtorName,
+    String initiatingPartyName,
     String creditorName,
     String debtorBic,
     String creditorBic,
