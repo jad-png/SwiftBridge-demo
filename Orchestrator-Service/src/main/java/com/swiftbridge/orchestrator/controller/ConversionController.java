@@ -3,6 +3,8 @@ package com.swiftbridge.orchestrator.controller;
 import com.swiftbridge.orchestrator.dto.conversion.ConversionResponse;
 import com.swiftbridge.orchestrator.exception.ValidationFailedException;
 import com.swiftbridge.orchestrator.service.ConversionService;
+import com.swiftbridge.orchestrator.validation.ConversionFileValidator;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -19,27 +21,23 @@ import java.io.IOException;
 public class ConversionController {
 
     private final ConversionService conversionService;
+    private final ConversionFileValidator conversionFileValidator;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> convertXmlToMt103(@RequestParam("file") MultipartFile file) throws IOException {
-        if (file.isEmpty()) {
-            throw new ValidationFailedException("ERR_EMPTY_FILE", "File is empty");
-        }
-
-        if (file.getSize() > 10_000_000) {
-            throw new ValidationFailedException("ERR_FILE_TOO_LARGE", "File size exceeds 10MB limit");
-        }
-
+        
+        conversionFileValidator.validate(file);
+        
         String filename = file.getOriginalFilename();
-        if (filename == null || !filename.toLowerCase().endsWith(".xml")) {
-            throw new ValidationFailedException("ERR_FILE_TYPE", "Only XML files are accepted");
-        }
-
+        
         log.info("Processing conversion request for file: {}", filename);
+        
         String xmlContent = new String(file.getBytes());
+        
         ConversionResponse conversionResponse = conversionService.convertXmlToMt103(xmlContent, filename);
-
+        
         log.info("Conversion completed successfully for file: {}", filename);
+        
         return ResponseEntity.ok(conversionResponse);
     }
 
