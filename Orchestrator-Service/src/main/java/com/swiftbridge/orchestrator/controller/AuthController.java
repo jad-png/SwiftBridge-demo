@@ -37,66 +37,45 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
-        try {
-            Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
-            );
-
-            String token = jwtUtil.generateJwt(authentication);
-
-            return ResponseEntity.ok(LoginResponse.builder()
-                    .token(token)
-                    .tokenType("Bearer")
-                    .expiresIn(86400L)
-                    .build());
-        } catch (Exception e) {
-            log.error("Authentication failed for user: {}", request.getUsername());
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("error", "Invalid credentials");
-            errorResponse.put("message", "Username or password is incorrect");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(LoginResponse.builder()
-                    .token(null)
-                    .tokenType("Bearer")
-                    .build());
-        }
+        Authentication authentication = authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+        );
+        String token = jwtUtil.generateJwt(authentication);
+        return ResponseEntity.ok(LoginResponse.builder()
+                .token(token)
+                .tokenType("Bearer")
+                .expiresIn(86400L)
+                .build());
     }
 
     @PostMapping("/register")
     public ResponseEntity<Map<String, Object>> register(@Valid @RequestBody RegisterRequest request) {
-        Map<String, Object> response = new HashMap<>();
-
         if (userRepository.findByUsername(request.getUsername()).isPresent()) {
+            Map<String, Object> response = new HashMap<>();
             response.put("error", "Username already exists");
             response.put("message", "The username is already registered in the system");
             return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
         }
 
-        try {
+        String hashedPassword = passwordEncoder.encode(request.getPassword());
 
-            String hashedPassword = passwordEncoder.encode(request.getPassword());
+        User newUser = User.builder()
+                .username(request.getUsername())
+                .email(request.getEmail())
+                .passwordHash(hashedPassword)
+                .role(Role.ROLE_USER)
+                .build();
 
-            User newUser = User.builder()
-                    .username(request.getUsername())
-                    .email(request.getEmail())
-                    .passwordHash(hashedPassword)
-                    .role(Role.ROLE_USER)
-                    .build();
+        User savedUser = userRepository.save(newUser);
+        log.info("User registered successfully: {}", savedUser.getUsername());
 
-            User savedUser = userRepository.save(newUser);
-            log.info("User registered successfully: {}", savedUser.getUsername());
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("message", "User registered successfully");
+        response.put("userId", savedUser.getId());
+        response.put("username", savedUser.getUsername());
+        response.put("email", savedUser.getEmail());
 
-            response.put("success", true);
-            response.put("message", "User registered successfully");
-            response.put("userId", savedUser.getId());
-            response.put("username", savedUser.getUsername());
-            response.put("email", savedUser.getEmail());
-
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        } catch (Exception e) {
-            log.error("Error during user registration: {}", e.getMessage(), e);
-            response.put("error", "Registration failed");
-            response.put("message", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }
