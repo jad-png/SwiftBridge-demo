@@ -1,0 +1,36 @@
+REQUIRED TAGS:
+- Document (root, xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.08")
+- FIToFICstmrCdtTrf
+- GrpHdr
+  - MsgId
+  - CreDtTm
+  - NbOfTxs
+  - SttlmInf
+    - SttlmMtd
+  - InstgAgt/FinInstnId/BICFI
+  - InstdAgt/FinInstnId/BICFI
+- CdtTrfTxInf (at least one)
+  - PmtId
+    - InstrId
+    - EndToEndId
+  - Amt
+    - InstdAmt (with Ccy attribute)
+  - CdtrAgt/FinInstnId/BICFI
+  - DbtrAgt/FinInstnId/BICFI
+  - Dbtr/Nm
+  - DbtrAcct/Id/IBAN
+  - Cdtr/Nm
+  - CdtrAcct/Id/IBAN
+
+OPTIONAL TAGS:
+- RmtInf/Ustrd (remittance info)
+
+VALIDATION:
+- All required tags must exist and be non-empty
+- Amount must be numeric, positive, and match Ccy
+- Dates/times must be ISO 8601 (e.g., 2026-03-25T10:00:00Z)
+- IBANs must be valid format
+- BICFI must be 8 or 11 uppercase letters
+- No illegal or missing characters
+- Hierarchy and order must match ISO 20022 pacs.008.001.08
+- XML must be well-formed and valid
