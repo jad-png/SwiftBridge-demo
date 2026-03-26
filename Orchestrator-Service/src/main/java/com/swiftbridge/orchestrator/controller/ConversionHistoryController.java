@@ -4,8 +4,7 @@ import com.swiftbridge.orchestrator.dto.history.HistoryItemDTO;
 import com.swiftbridge.orchestrator.dto.history.HistoryListResponse;
 import com.swiftbridge.orchestrator.dto.history.ConversionAuditDTO;
 import com.swiftbridge.orchestrator.entity.ConversionStatus;
-import com.swiftbridge.orchestrator.service.HistoryService;
-import com.swiftbridge.orchestrator.security.SecurityUtils;
+import com.swiftbridge.orchestrator.service.impl.HistoryServiceFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +22,7 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class ConversionHistoryController {
 
-    private final HistoryService historyService;
-    private final SecurityUtils securityUtils;
+    private final HistoryServiceFacade historyServiceFacade;
 
     @GetMapping
     public ResponseEntity<HistoryListResponse> getConversions(
@@ -35,28 +33,16 @@ public class ConversionHistoryController {
         @RequestParam(name = "size", defaultValue = "20") int size,
         @RequestParam(name = "allUsers", required = false, defaultValue = "false") boolean allUsers
     ) {
-        if (allUsers) {
-            if (!securityUtils.isAdmin()) {
-                return ResponseEntity.status(403).build();
-            }
-            // Will call global history service method (to be implemented next)
-            return ResponseEntity.ok(historyService.findGlobalHistory(date, status, page, size));
-        } else {
-            return ResponseEntity.ok(historyService.findFilteredHistory(date, status, page, size));
-        }
+        return ResponseEntity.ok(historyServiceFacade.getConversions(date, status, page, size, allUsers));
     }
 
     @GetMapping("/{txnId}")
     public ResponseEntity<ConversionAuditDTO> getConversionByTransactionId(@PathVariable("txnId") String txnId) {
-        return historyService.getAuditByTransactionId(txnId)
-            .map(ResponseEntity::ok)
-            .orElseGet(() -> ResponseEntity.notFound().build());
+        return ResponseEntity.ok(historyServiceFacade.getConversionByTransactionId(txnId));
     }
 
     @GetMapping("/id/{id}")
     public ResponseEntity<HistoryItemDTO> getConversionById(@PathVariable("id") Long id) {
-        return historyService.getHistoryById(id)
-            .map(ResponseEntity::ok)
-            .orElseGet(() -> ResponseEntity.notFound().build());
+        return ResponseEntity.ok(historyServiceFacade.getConversionById(id));
     }
 }
