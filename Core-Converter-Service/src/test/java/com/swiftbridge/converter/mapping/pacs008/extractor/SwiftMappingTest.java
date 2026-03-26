@@ -36,7 +36,11 @@ class SwiftMappingTest {
     @BeforeEach
     void setUp() {
         xmlParsingService = new XmlParsingService();
-        fieldExtractor = new Pacs008FieldExtractor(normalizer);
+        fieldExtractor = new Pacs008FieldExtractor(normalizer, xmlParsingService);
+
+        // Default mock behavior for normalizer
+        org.mockito.Mockito.lenient().when(normalizer.normalizeText(org.mockito.ArgumentMatchers.anyString()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
     }
 
     @Test
@@ -53,9 +57,9 @@ class SwiftMappingTest {
         assertEquals("500000.00", fields.amountValue(), "Amount should be 500000.00");
         assertEquals("USD", fields.amountCurrency(), "Currency should be USD");
         assertTrue(fields.debtorName().contains("JOHN SMITH"),
-            "Debtor name should contain JOHN SMITH");
+                "Debtor name should contain JOHN SMITH");
         assertTrue(fields.creditorName().contains("JANE DOE"),
-            "Creditor name should contain JANE DOE");
+                "Creditor name should contain JANE DOE");
         assertEquals("2026-03-20", fields.settlementDate(), "Settlement date should be 2026-03-20");
     }
 
@@ -66,10 +70,9 @@ class SwiftMappingTest {
         Document document = parseFixture(MISSING_AMOUNT_FIXTURE);
 
         SwiftMappingException exception = assertThrows(
-            SwiftMappingException.class,
-            () -> fieldExtractor.extract(document),
-            "Should throw SwiftMappingException when amount is missing"
-        );
+                SwiftMappingException.class,
+                () -> fieldExtractor.extract(document),
+                "Should throw SwiftMappingException when amount is missing");
 
         assertAmountMissingError(exception);
     }
@@ -137,9 +140,9 @@ class SwiftMappingTest {
     private void assertAmountMissingError(SwiftMappingException exception) {
         assertNotNull(exception.getErrorCode(), "Error code should not be null");
         assertEquals(SwiftErrorCode.ERR_MAPPING_AMOUNT_MISSING, exception.getErrorCode(),
-            "Error code should map to missing amount");
+                "Error code should map to missing amount");
         assertEquals("SB-4001", exception.getErrorCode().getCode(),
-            "Error code should be SB-4001 for missing amount");
+                "Error code should be SB-4001 for missing amount");
     }
 
     private void assertBic(String actualBic, String expectedBic, String label) {
