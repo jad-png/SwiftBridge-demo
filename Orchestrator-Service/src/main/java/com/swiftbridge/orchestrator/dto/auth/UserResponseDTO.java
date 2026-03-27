@@ -3,7 +3,6 @@ package com.swiftbridge.orchestrator.dto.auth;
 import com.swiftbridge.orchestrator.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

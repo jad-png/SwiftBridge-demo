@@ -38,7 +38,6 @@ class SwiftMappingTest {
         xmlParsingService = new XmlParsingService();
         fieldExtractor = new Pacs008FieldExtractor(normalizer, xmlParsingService);
 
-        // Default mock behavior for normalizer
         org.mockito.Mockito.lenient().when(normalizer.normalizeText(org.mockito.ArgumentMatchers.anyString()))
                 .thenAnswer(invocation -> invocation.getArgument(0));
     }
