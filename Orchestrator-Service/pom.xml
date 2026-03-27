@@ -133,6 +133,13 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- H2 for testing and local execution -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
