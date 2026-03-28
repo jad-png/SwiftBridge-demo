@@ -1,6 +1,9 @@
 package com.swiftbridge.converter.utils;
 
 import com.swiftbridge.converter.mapping.model.ConversionResult;
+import com.swiftbridge.converter.exception.ConversionFailedException;
+import com.swiftbridge.converter.exception.SwiftMappingException;
+import com.swiftbridge.converter.exception.SwiftErrorCode;
 import com.swiftbridge.converter.mapping.pacs008.mapper.Pacs008ToMt103Mapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +27,8 @@ public class SwiftCbprMapper {
 
             return conversionResult;
 
+        } catch (SwiftMappingException | ConversionFailedException e) {
+            throw e;
         } catch (Exception e) {
             log.error("SwiftCbprMapper: CBPR+ to MT103 conversion failed", e);
             throw wrapMappingFailure(e);
@@ -32,10 +37,13 @@ public class SwiftCbprMapper {
 
     private void logConversionSuccess(ConversionResult conversionResult) {
         log.info("SwiftCbprMapper: CBPR+ to MT103 conversion completed successfully. " +
-                 "Generated MT103 message length: {} characters", conversionResult.mt103().length());
+                "Generated MT103 message length: {} characters", conversionResult.mt103().length());
     }
 
-    private RuntimeException wrapMappingFailure(Exception exception) {
-        return new RuntimeException("Failed to map CBPR+ XML to MT103: " + exception.getMessage(), exception);
+    private ConversionFailedException wrapMappingFailure(Exception exception) {
+        return new ConversionFailedException(
+                SwiftErrorCode.ERR_MT103_CONVERSION_FAILED.getCode(),
+                "Failed to map CBPR+ XML to MT103: " + exception.getMessage(),
+                exception);
     }
 }

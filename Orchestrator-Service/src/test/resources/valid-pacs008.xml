@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.02">
+    <CstmrCdtTrfInitn>
+        <GrpHdr>
+            <MsgId>ABCD20260320001234</MsgId>
+            <CreDtTm>2026-03-20T10:15:30</CreDtTm>
+            <NbOfTxns>1</NbOfTxns>
+            <CtrlSum>500000.00</CtrlSum>
+            <InitgPty>
+                <Nm>SENDER BANK CORP</Nm>
+            </InitgPty>
+        </GrpHdr>
+        <PmtInfo>
+            <PmtInfId>ABCD20260320001234</PmtInfId>
+            <PmtMtd>TRF</PmtMtd>
+            <ChrgBr>SLEV</ChrgBr>
+            <ReqdExctnDt>2026-03-20</ReqdExctnDt>
+            <Dbtr>
+                <Nm>JOHN SMITH INTERNATIONAL TRADING COMPANY LIMITED</Nm>
+                <PstlAdr>
+                    <Ctry>GB</Ctry>
+                    <AdrLine>123 Business Street London</AdrLine>
+                </PstlAdr>
+            </Dbtr>
+            <DbtrAcct>
+                <Id>
+                    <IBAN>GB82WEST12345698765432</IBAN>
+                </Id>
+            </DbtrAcct>
+            <DbtrAgt>
+                <FinInstnId>
+                    <BICFI>WESTGB2L</BICFI>
+                </FinInstnId>
+            </DbtrAgt>
+            <CdtTrfTxInf>
+                <PmtId>
+                    <InstrId>12345ABCDE</InstrId>
+                    <EndToEndId>UETR123456789ABCDEF123456789ABC</EndToEndId>
+                </PmtId>
+                <Amt>
+                    <InstdAmt Ccy="GBP">500000.00</InstdAmt>
+                </Amt>
+                <CdtrAgt>
+                    <FinInstnId>
+                        <BICFI>BARCGB22</BICFI>
+                    </FinInstnId>
+                </CdtrAgt>
+                <Cdtr>
+                    <Nm>ACME SUPPLIES LTD</Nm>
+                    <PstlAdr>
+                        <Ctry>GB</Ctry>
+                        <AdrLine>456 Supplier Road Manchester</AdrLine>
+                    </PstlAdr>
+                </Cdtr>
+                <CdtrAcct>
+                    <Id>
+                        <IBAN>GB29NWBK60161331926819</IBAN>
+                    </Id>
+                </CdtrAcct>
+            </CdtTrfTxInf>
+        </PmtInfo>
+    </CstmrCdtTrfInitn>
+</Document>

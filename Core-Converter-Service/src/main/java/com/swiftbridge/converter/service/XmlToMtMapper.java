@@ -22,6 +22,8 @@ public class XmlToMtMapper {
             log.info("XmlToMtMapper: MT103 conversion completed successfully");
             return mt103;
 
+        } catch (com.swiftbridge.converter.exception.SwiftMappingException e) {
+            throw e;
         } catch (Exception e) {
             log.error("XmlToMtMapper: Error converting XML to MT103", e);
             throw wrapConversionFailure(e);
@@ -34,9 +36,8 @@ public class XmlToMtMapper {
 
     private ConversionFailedException wrapConversionFailure(Exception exception) {
         return new ConversionFailedException(
-            "ERR_MT103_CONVERSION",
-            "Failed to convert pacs.008 to MT103: " + exception.getMessage(),
-            exception
-        );
+                com.swiftbridge.converter.exception.SwiftErrorCode.ERR_MT103_CONVERSION_FAILED.getCode(),
+                "Failed to convert pacs.008 to MT103: " + exception.getMessage(),
+                exception);
     }
 }

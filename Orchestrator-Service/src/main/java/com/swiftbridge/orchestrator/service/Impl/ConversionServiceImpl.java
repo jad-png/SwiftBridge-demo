@@ -16,7 +16,6 @@ import com.swiftbridge.orchestrator.service.FinancialValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -38,7 +37,6 @@ public class ConversionServiceImpl implements ConversionService {
     private final UserRepository userRepository;
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public ConversionResponse convertXmlToMt103(String xmlContent, String filename) {
         TransactionHistory tx = new TransactionHistory();
         tx.setTransactionId(UUID.randomUUID().toString());
@@ -79,11 +77,10 @@ public class ConversionServiceImpl implements ConversionService {
             tx.setErrorMessage(ex.getMessage());
             tx.setMessageReference(ex.getInstructionId());
             tx.setValidationErrors(auditService.serializeValidationErrors(List.of(
-                ConversionAuditDTO.ValidationError.builder()
-                    .message(ex.getMessage())
-                    .path(ex.getInstructionId())
-                    .build()
-            )));
+                    ConversionAuditDTO.ValidationError.builder()
+                            .message(ex.getMessage())
+                            .path(ex.getInstructionId())
+                            .build())));
             throw ex;
         } catch (ConversionFailedException ex) {
             log.error("Conversion failed for file: {}", filename, ex);
@@ -112,7 +109,6 @@ public class ConversionServiceImpl implements ConversionService {
             return null;
         }
     }
-
 
     private long calculateProcessingDurationMs(long startNanos) {
         return Math.max(0L, (System.nanoTime() - startNanos) / 1_000_000L);

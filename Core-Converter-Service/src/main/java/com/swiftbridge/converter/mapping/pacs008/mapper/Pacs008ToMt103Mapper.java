@@ -5,6 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 
+import com.swiftbridge.converter.exception.ConversionFailedException;
+import com.swiftbridge.converter.exception.SwiftMappingException;
+import com.swiftbridge.converter.exception.SwiftErrorCode;
 import com.swiftbridge.converter.mapping.model.Pacs008Fields;
 import com.swiftbridge.converter.mapping.model.ConversionResult;
 import com.swiftbridge.converter.mapping.model.mt103.ApplicationHeaderBlock;
@@ -132,6 +135,8 @@ public class Pacs008ToMt103Mapper {
             log.info("========== Pacs.008 to MT103 Conversion Completed ==========");
             return new ConversionResult(mt103, warnings);
 
+        } catch (SwiftMappingException | ConversionFailedException ex) {
+            throw ex;
         } catch (Exception ex) {
             log.error("[DEBUG] Exception during mapping: {}", ex.getMessage(), ex);
             throw handleMappingFailure(ex);
@@ -151,8 +156,13 @@ public class Pacs008ToMt103Mapper {
         try {
             Document document = xmlParsingService.parseNamespaceAwareXml(xmlContent);
             return fieldExtractor.extract(document);
+        } catch (SwiftMappingException ex) {
+            throw ex;
         } catch (Exception ex) {
-            throw new RuntimeException("Unable to parse pacs.008 XML content", ex);
+            throw new ConversionFailedException(
+                    SwiftErrorCode.ERR_XML_PARSING_FAILED.getCode(),
+                    "Unable to parse pacs.008 XML content: " + ex.getMessage(),
+                    ex);
         }
     }
 
